@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" focusTraversable="true" prefHeight="499.0" prefWidth="814.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CarFactoryController">
+   <children>
+      <Label layoutX="264.0" layoutY="39.0" prefHeight="17.0" prefWidth="480.0" text="CAR FACTORY" />
+   </children>
+</AnchorPane>
