@@ -16,6 +16,9 @@ import model.factory.CarFactory;
  */
 public class CarBuilder implements CarFactory {
 
+    //Per hour -> 100 cars aprox => 5 pieces, then 100/5  makes how many pieces  needs per hour
+    private int CONSUMING_PIECES_PER_HOUR = 20;
+
     private String name;
 
     //Thread control - run or not to run
@@ -61,25 +64,37 @@ public class CarBuilder implements CarFactory {
     @Override
     public synchronized void consume(int count) throws InterruptedException {
         int consumed = 0;
-        synchronized (batteryBuilder) {
+        synchronized (batteryBuilder.getPiecesList()) {
 
             while (batteryBuilder.getPiecesList().size() < batteryBuilder.getMIN_STOCK()) {
-                System.out.println("\nProducer [" + batteryBuilder.getName() + "] is stopped... !!!\n");
-                batteryBuilder.wait();
+                System.out.println("\nConsumer [" + batteryBuilder.getName() + "] is stopped... !!!\n");
+                batteryBuilder.getPiecesList().wait();
                 System.out.println("\n==================\n");
             }
 
             Thread.sleep(1000);//for human being to watch how jvm behaves
 
             //What it consumes
-            consumed = batteryBuilder.getPiecesList().remove(0);
-            System.out.println("Consumed: " + consumed);
+            if (batteryBuilder.getPiecesList().size() - batteryBuilder.getMIN_STOCK() > CONSUMING_PIECES_PER_HOUR) {
+                for (int i = 0; i < CONSUMING_PIECES_PER_HOUR; ++i) {
+                    if (batteryBuilder.getPiecesList().size() > 0) {
+                        consumed = batteryBuilder.getPiecesList().remove(0);
+
+                    }
+                }
+                //Cars "built-cars"
+                piecesList.add(consumed);
+            } else {
+                //   batteryBuilder.getPiecesList().clear();
+            }
+
+            System.out.println("Consumed: " + CONSUMING_PIECES_PER_HOUR);
+            System.out.println("Battery stock : " + batteryBuilder.getPiecesList().size());
 
             //What it uses to produce car
-            piecesList.add(consumed);
             System.out.println("Cars procued: " + piecesList.size() + "\n\n");
             ++count;
-            batteryBuilder.notify();
+            batteryBuilder.getPiecesList().notify();
         }
 
     }

@@ -46,10 +46,11 @@ public class CarFactoryController implements Initializable {
     //Windows threads
     private Thread carBuilderTextThread;
     private Thread batteryBuilderTextThread;
+    private Thread batteryBuilderStopButtonThread;
 
     //Per mostrar errors o altres
     private PopUpMSG popUpMsg;
-
+    
     @FXML
     private Spinner<?> engineSpinnerId;
     @FXML
@@ -101,35 +102,35 @@ public class CarFactoryController implements Initializable {
         buildersInit();
         windowComponentsInit();
     }
-
+    
     private void buildersInit() {
         this.carBuilderThread = new Thread(this.carBuilder, "car-builder-thread");
         this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
         carBuilderThread.start();
         batteryBuilderThread.start();
-
+        
     }
-
+    
     private void windowComponentsInit() {
-
+        
         this.carBuilderTextThread = new Thread(new Runnable() {
             @Override
             public void run() {
-
+                
                 try {
                     while (true) {
                         System.out.println("CAR TEXT");
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                         carTextSync(); //no synchronize because it wont work
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             }
         },
                 "car-text-builder-thread");
-
+        
         this.batteryBuilderTextThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -142,21 +143,24 @@ public class CarFactoryController implements Initializable {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             }
         }, "battery-text-builder-thread");
-
+        
         carBuilderTextThread.start();
-
+        
         batteryBuilderTextThread.start();
     }
-
+    
     private void carTextSync() throws InterruptedException {
-        carText.setText("" + carBuilder.getPiecesList().size());
-        System.out.println(carText.getText());
-        // this.carBuilder.getPiecesList().notify();
+        synchronized (carBuilder) {
+            carText.setText("" + carBuilder.getPiecesList().size());
+            System.out.println(carText.getText());
+            // this.carBuilder.getPiecesList().notify();
+        }
+        
     }
-
+    
     private void batteryTextSync() throws InterruptedException {
         synchronized (batteryBuilder) {
             batteryText.setText("" + batteryBuilder.getPiecesList().size());
@@ -164,5 +168,19 @@ public class CarFactoryController implements Initializable {
             // batteryBuilder.getPiecesList().notify();
         }
     }
-
+    
+    @FXML
+    private void onStopBatteriesClick(MouseEvent event) {
+        
+        System.out.println("BUTTTTONNNNNNNNNNN\n\n\n");
+        
+        if (batteryBuilder.isKeepProducingUnderButton()) {
+            batteryBuilder.setKeepProducingUnderButton(false);
+            stopBtnBatteries.setText("Restart factory");
+        }else{
+               batteryBuilder.setKeepProducingUnderButton(true);
+               stopBtnBatteries.setText("Stop factory");
+        }
+    }
+    
 }

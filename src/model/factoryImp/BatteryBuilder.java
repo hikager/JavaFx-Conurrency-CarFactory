@@ -22,7 +22,8 @@ public class BatteryBuilder implements CarPieceFactory {
     private final int MIN_STOCK = 550;
     //Production per hour
     private final int PROD_PER_HOUR = 90;
-
+    boolean keepProducing;
+     boolean keepProducingUnderButton;
     private String name;
 
     //List which is shared among carbuilder and its  piece builders
@@ -48,6 +49,7 @@ public class BatteryBuilder implements CarPieceFactory {
 
     @Override
     public void run() {
+        keepProducingUnderButton =true;
         running.set(true);
         int count = 0;
 
@@ -55,6 +57,10 @@ public class BatteryBuilder implements CarPieceFactory {
             System.out.println("Battery builder");
             try {
                 System.out.println("\n\t\\/" + this.name + "\n");
+
+                if (piecesList.size()- PROD_PER_HOUR < MIN_STOCK) {
+                    keepProducing = true;
+                }
                 produce(++count);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -65,25 +71,30 @@ public class BatteryBuilder implements CarPieceFactory {
 
     @Override
     public void produce(int count) throws InterruptedException {
+
         //Making synchronization of objects - we avoid Race Conditions
         synchronized (piecesList) {
+
             System.out.println("STOCK SIZE PRODUCER " + name + ": " + piecesList.size());
-            while (piecesList.size() == MAX_STOCK) {
+            while (piecesList.size() > MAX_STOCK) {
                 System.out.println("\nProducer [" + name + "] is full !!!\n");
                 piecesList.wait();
                 System.out.println("\n==================\n");
+                keepProducing = false;
             }
 
-            //If the consumer is not empty then we got to simulate the "consumition"
-            Thread.sleep(1000);//for human being to watch how jvm behaves
+            if (keepProducing && keepProducingUnderButton) {
+                //If the consumer is not empty then we got to simulate the "consumition"
+                Thread.sleep(1000);//for human being to watch how jvm behaves
 
-            for (int i = 0; i < PROD_PER_HOUR; ++i) {
-                piecesList.add(count);
+                for (int i = 0; i < PROD_PER_HOUR; ++i) {
+                    piecesList.add(count);
+                }
+
+                System.out.println("\nProduced " + name + ":: " + count);
+                ++count;
+                piecesList.notify();//Notify all threads which use the object that this one is no "free"
             }
-
-            System.out.println("\nProduced " + name + ":: " + count);
-            ++count;
-            piecesList.notify();//Notify all threads which use the object that this one is no "free"
 
         }
     }
@@ -120,5 +131,24 @@ public class BatteryBuilder implements CarPieceFactory {
     public void setPiecesList(List<Integer> piecesList) {
         this.piecesList = piecesList;
     }
+
+    public boolean isKeepProducing() {
+        return keepProducing;
+    }
+
+    public void setKeepProducing(boolean keepProducing) {
+        this.keepProducing = keepProducing;
+    }
+
+    public boolean isKeepProducingUnderButton() {
+        return keepProducingUnderButton;
+    }
+
+    public synchronized void setKeepProducingUnderButton(boolean keepProducingUnderButton) {
+        this.keepProducingUnderButton = keepProducingUnderButton;
+    }
+    
+    
+    
 
 }
