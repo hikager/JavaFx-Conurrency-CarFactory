@@ -81,6 +81,8 @@ public class CarFactoryController implements Initializable {
     /**
      * Initializes the controller class components I will be using along the
      * execution.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {

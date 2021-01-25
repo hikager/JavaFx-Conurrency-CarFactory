@@ -18,7 +18,7 @@ public interface CarFactory extends Runnable {
      *
      * @param count A counting integer to know the times this method is called.
      */
-    void consume(int count);
+    void consume(int count )throws InterruptedException ;
 
     /**
      * Whether we need to stop the consume part (All of it) - this will stop the
