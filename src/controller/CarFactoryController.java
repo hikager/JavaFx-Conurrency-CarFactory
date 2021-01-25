@@ -6,7 +6,10 @@
 package controller;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +24,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import model.Person;
 import model.PopUpMSG;
+import model.factory.CarFactory;
+import model.factoryImp.BatteryBuilder;
+import model.factoryImp.CarBuilder;
 
 /**
  * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
@@ -29,18 +35,21 @@ import model.PopUpMSG;
  */
 public class CarFactoryController implements Initializable {
 
-    //Definim un atribut que serà una especie Array pròpia de JavaFX que es diu ObservableList.
-    private ObservableList<Person> personas;
+    //Runnables
+    private CarBuilder carBuilder;
+    private BatteryBuilder batteryBuilder;
+
+    //Threads
+    private Thread carBuilderThread;
+    private Thread batteryBuilderThread;
+
+    //Windows threads
+    private Thread carBuilderTextThread;
+    private Thread batteryBuilderTextThread;
+
     //Per mostrar errors o altres
     private PopUpMSG popUpMsg;
 
-    private TextField txtName;
-    private TextField txtFamilyName;
-    private TextField txtAge;
-    private TableColumn colName;
-    private TableColumn colFamilyName;
-    private TableColumn colAge;
-    private TableView<Person> tblPersona;
     @FXML
     private Spinner<?> engineSpinnerId;
     @FXML
@@ -81,12 +90,79 @@ public class CarFactoryController implements Initializable {
     /**
      * Initializes the controller class components I will be using along the
      * execution.
+     *
      * @param url
      * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        batteryBuilder = new BatteryBuilder("batteryBuilder", new ArrayList<Integer>());
+        carBuilder = new CarBuilder(batteryBuilder);
+        buildersInit();
+        windowComponentsInit();
+    }
 
+    private void buildersInit() {
+        this.carBuilderThread = new Thread(this.carBuilder, "car-builder-thread");
+        this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
+        carBuilderThread.start();
+        batteryBuilderThread.start();
+
+    }
+
+    private void windowComponentsInit() {
+
+        this.carBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    while (true) {
+                        System.out.println("CAR TEXT");
+                        Thread.sleep(1000);
+                        carTextSync(); //no synchronize because it wont work
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        },
+                "car-text-builder-thread");
+
+        this.batteryBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        System.out.println("battery text");
+                        Thread.sleep(1000);
+                        batteryTextSync();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }, "battery-text-builder-thread");
+
+        carBuilderTextThread.start();
+
+        batteryBuilderTextThread.start();
+    }
+
+    private void carTextSync() throws InterruptedException {
+        carText.setText("" + carBuilder.getPiecesList().size());
+        System.out.println(carText.getText());
+        // this.carBuilder.getPiecesList().notify();
+    }
+
+    private void batteryTextSync() throws InterruptedException {
+        synchronized (batteryBuilder) {
+            batteryText.setText("" + batteryBuilder.getPiecesList().size());
+            System.out.println(batteryText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
     }
 
 }

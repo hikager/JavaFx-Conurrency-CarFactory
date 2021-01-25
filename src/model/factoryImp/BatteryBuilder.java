@@ -5,6 +5,7 @@
  */
 package model.factoryImp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import model.factory.CarPieceFactory;
@@ -30,13 +31,28 @@ public class BatteryBuilder implements CarPieceFactory {
     //Thread control - run or not to run
     private final AtomicBoolean running = new AtomicBoolean(false);
 
+    public BatteryBuilder(String name, List<Integer> piecesList) {
+        this.name = name;
+        this.piecesList = piecesList;
+
+        if (piecesList == null) {
+            piecesList = new ArrayList<>();
+        }
+    }
+
+    public BatteryBuilder() {
+        if (piecesList == null) {
+            piecesList = new ArrayList<>();
+        }
+    }
+
     @Override
     public void run() {
         running.set(true);
         int count = 0;
 
         while (running.get()) { // gets the value from the memory, so that changes made by other threads are visible; equivalent to reading a volatile variable
-
+            System.out.println("Battery builder");
             try {
                 System.out.println("\n\t\\/" + this.name + "\n");
                 produce(++count);
@@ -60,7 +76,11 @@ public class BatteryBuilder implements CarPieceFactory {
 
             //If the consumer is not empty then we got to simulate the "consumition"
             Thread.sleep(1000);//for human being to watch how jvm behaves
-            piecesList.add(count);
+
+            for (int i = 0; i < PROD_PER_HOUR; ++i) {
+                piecesList.add(count);
+            }
+
             System.out.println("\nProduced " + name + ":: " + count);
             ++count;
             piecesList.notify();//Notify all threads which use the object that this one is no "free"

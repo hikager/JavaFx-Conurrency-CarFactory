@@ -5,6 +5,7 @@
  */
 package model.factoryImp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import model.factory.CarFactory;
@@ -37,6 +38,9 @@ public class CarBuilder implements CarFactory {
     //Just for test view is working fine (synchronized)
     public CarBuilder(BatteryBuilder batteryBuilder) {
         this.batteryBuilder = batteryBuilder;
+        if (piecesList == null) {
+            piecesList = new ArrayList<>();
+        }
     }
 
     @Override
@@ -60,14 +64,20 @@ public class CarBuilder implements CarFactory {
         synchronized (batteryBuilder) {
 
             while (batteryBuilder.getPiecesList().size() < batteryBuilder.getMIN_STOCK()) {
-                System.out.println("\nProducer [" + batteryBuilder.getName() + "] is full !!!\n");
+                System.out.println("\nProducer [" + batteryBuilder.getName() + "] is stopped... !!!\n");
                 batteryBuilder.wait();
                 System.out.println("\n==================\n");
             }
 
             Thread.sleep(1000);//for human being to watch how jvm behaves
+
+            //What it consumes
             consumed = batteryBuilder.getPiecesList().remove(0);
             System.out.println("Consumed: " + consumed);
+
+            //What it uses to produce car
+            piecesList.add(consumed);
+            System.out.println("Cars procued: " + piecesList.size() + "\n\n");
             ++count;
             batteryBuilder.notify();
         }
