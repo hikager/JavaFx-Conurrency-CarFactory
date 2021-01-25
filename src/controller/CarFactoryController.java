@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -40,6 +41,42 @@ public class CarFactoryController implements Initializable {
     private TableColumn colFamilyName;
     private TableColumn colAge;
     private TableView<Person> tblPersona;
+    @FXML
+    private Spinner<?> engineSpinnerId;
+    @FXML
+    private Spinner<?> stappingSpinngerId;
+    @FXML
+    private Spinner<?> batterySpinngerId;
+    @FXML
+    private Spinner<?> wheelSpinngerId;
+    @FXML
+    private Spinner<?> seatSpinngerId;
+    @FXML
+    private TextField engineText;
+    @FXML
+    private TextField stampingText;
+    @FXML
+    private TextField batteryText;
+    @FXML
+    private TextField wheelText;
+    @FXML
+    private TextField seatText;
+    @FXML
+    private Button stopBtnEngines;
+    @FXML
+    private Button stopBtnStampings;
+    @FXML
+    private Button stopBtnBatteries;
+    @FXML
+    private Button stopBtnWheels;
+    @FXML
+    private Button stopBtnSeats;
+    @FXML
+    private Spinner<?> carSpinngerId;
+    @FXML
+    private TextField carText;
+    @FXML
+    private Button stopBtnCars;
 
     /**
      * Initializes the controller class components I will be using along the
