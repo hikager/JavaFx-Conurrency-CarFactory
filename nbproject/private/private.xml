@@ -4,6 +4,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/controller/Main.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factoryImp/EngineBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factoryImp/StampingBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/controller/CarFactoryController.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factory/CarPieceFactory.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factory/CarFactory.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factoryImp/WheelBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/view/CarFactoryView.fxml</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factoryImp/CarBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/DAM2_noDropbox/workspace-netbeans/m9.uf2.project1/src/model/factoryImp/BatteryBuilder.java</file>
         </group>
     </open-files>
 </project-private>
