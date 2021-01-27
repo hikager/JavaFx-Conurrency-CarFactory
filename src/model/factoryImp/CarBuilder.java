@@ -56,6 +56,13 @@ public class CarBuilder implements CarFactory {
 
     }
 
+    public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder) {
+        this.engineBuilder = engineBuilder;
+        this.batteryBuilder = batteryBuilder;
+        this.seatBuilder = seatBuilder;
+
+    }
+
     @Override
     public void run() {
         // writes the value to memory, so that the change is visible to other threads; equivalent to writing a volatile variable
@@ -98,23 +105,54 @@ public class CarBuilder implements CarFactory {
 
     }
 
+    /**
+     * Whether the CarFactory can make a car
+     *
+     * @return If all the factories were made enough pieces to build a car (100
+     * p hour)
+     */
     public boolean canConsume() {
-        return canConsumeBatteries() && canConsumeEngines();
+        return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats();
     }
 
+    /**
+     * Report the consumer whether batteries can be consumed.
+     *
+     * @return Can we get batteries?
+     */
     public boolean canConsumeBatteries() {
         return batteryBuilder.getPieces() > batteryBuilder.getMIN_STOCK() || !batteryBuilder.canProduce();
     }
 
+    /**
+     * Report the consumer whether engines can be consumed.
+     *
+     * @return Can we get engines?
+     */
     public boolean canConsumeEngines() {
         return engineBuilder.getPieces() > engineBuilder.getMIN_STOCK() || !engineBuilder.canProduce();
     }
 
+    /**
+     * Report the consumer whether seats can be consumed.
+     *
+     * @return Can we get seats?
+     */
+    public boolean canConsumeSeats() {
+        return seatBuilder.getPieces() > seatBuilder.getMIN_STOCK() || !seatBuilder.canProduce();
+    }
+
+    /**
+     * It takes the amount of pieces which 100 cars need per hour (100 pieces
+     * from each builder/factory)
+     */
     private void consumePieces() {
         //Consuming batteries
         batteryBuilder.setPieces(batteryBuilder.getPieces() - CARS_PER_HOUR);
         //Consuming engines
         engineBuilder.setPieces(engineBuilder.getPieces() - CARS_PER_HOUR);
+        //Consuming seats
+        seatBuilder.setPieces(seatBuilder.getPieces() - CARS_PER_HOUR);
     }
 
     /* public int amountToConsume() {

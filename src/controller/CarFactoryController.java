@@ -25,6 +25,7 @@ import model.PopUpMSG;
 import model.factoryImp.BatteryBuilder;
 import model.factoryImp.CarBuilder;
 import model.factoryImp.EngineBuilder;
+import model.factoryImp.SeatBuilder;
 
 /**
  * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
@@ -41,16 +42,19 @@ public class CarFactoryController implements Initializable {
     private CarBuilder carBuilder;
     private BatteryBuilder batteryBuilder;
     private EngineBuilder engineBuilder;
+    private SeatBuilder seatBuilder;
 
     //Threads
     private Thread carBuilderThread;
     private Thread batteryBuilderThread;
     private Thread engineBuilderThread;
+    private Thread seatBuilderThread;
 
     //Windows threads
     private Thread carBuilderTextThread;
     private Thread batteryBuilderTextThread;
     private Thread engineBuilderTextThread;
+    private Thread seatBuilderTextThread;
     private Thread batteryBuilderStopButtonThread;
 
     //Per mostrar errors o altres
@@ -104,7 +108,8 @@ public class CarFactoryController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         batteryBuilder = new BatteryBuilder("batteryBuilder", new ArrayList<Integer>());
         engineBuilder = new EngineBuilder();
-        carBuilder = new CarBuilder(batteryBuilder, engineBuilder);
+        seatBuilder = new SeatBuilder();
+        carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder);
 
         buildersInit();
         windowComponentsInit();
@@ -114,10 +119,13 @@ public class CarFactoryController implements Initializable {
     private void buildersInit() {
         this.carBuilderThread = new Thread(this.carBuilder, "car-builder-thread");
         this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
-        engineBuilderThread = new Thread(this.engineBuilder, "engine-builder-thread");
+        this.engineBuilderThread = new Thread(this.engineBuilder, "engine-builder-thread");
+        this.seatBuilderThread = new Thread(this.seatBuilder, "seat-builder-thread");
+
         carBuilderThread.start();
         batteryBuilderThread.start();
         engineBuilderThread.start();
+        seatBuilderThread.start();
 
     }
 
@@ -173,11 +181,30 @@ public class CarFactoryController implements Initializable {
 
             }
         }, "battery-text-builder-thread");
+
+        this.seatBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        System.out.println("battery text");
+                        Thread.sleep(1000);
+                        seatTextSync();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }, "battery-text-builder-thread");
+
         carBuilderTextThread.start();
 
         batteryBuilderTextThread.start();
 
         engineBuilderTextThread.start();
+
+        seatBuilderTextThread.start();
     }
 
     private void carTextSync() throws InterruptedException {
@@ -229,6 +256,25 @@ public class CarFactoryController implements Initializable {
             }
 
             System.out.println(engineText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    private void seatTextSync() throws InterruptedException {
+        synchronized (seatBuilder.getPieces()) {
+            seatText.setText("" + seatBuilder.getPieces());
+
+            if (!seatBuilder.isStop()) {
+                if (seatBuilder.canProduce()) {
+                    seatText.setStyle(styleWhenIsWorking);
+                } else {
+                    seatText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                seatText.setStyle(styleWhenIsBeingStop);
+            }
+
+            System.out.println(seatText.getText());
             // batteryBuilder.getPiecesList().notify();
         }
     }
