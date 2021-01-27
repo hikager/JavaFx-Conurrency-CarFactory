@@ -12,6 +12,12 @@ import model.factory.CarFactory;
 
 /**
  *
+ * <h2>Carbuilder class</h2>
+ * <p>
+ * It consumes from its piece factories and then it produce cars with them.</p>
+ *
+ * It inherited from its CarFactory the CARS_PER_HOUR
+ *
  * @author Luis ML
  */
 public class CarBuilder implements CarFactory {
@@ -70,18 +76,19 @@ public class CarBuilder implements CarFactory {
 
     @Override
     public synchronized void consume(int count) throws InterruptedException {
-        
+
         //  consume(count);
-        if (!stop && canConsume()) {
-            int consumes = 100;
+        //!stop &&
+        if ( canConsume()) {
+           // int consumes = 100;
             System.out.println("GO CONSUMER.... (" + count + ")");
             Integer batPieces = batteryBuilder.getPieces();
-            batPieces -= consumes;
-           batteryBuilder.setPieces(batPieces);
+            batPieces -= CARS_PER_HOUR;
+            batteryBuilder.setPieces(batPieces);
 
-            cars += consumes;
-            
-            System.out.println("CONSUMED: "+consumes);
+            cars += CARS_PER_HOUR;
+
+            System.out.println("CONSUMED: " + CARS_PER_HOUR);
 
         } else {
             System.out.println("CONSUMER STOP (max stock reached)");
@@ -90,13 +97,13 @@ public class CarBuilder implements CarFactory {
     }
 
     public boolean canConsume() {
-        return batteryBuilder.getPieces() > batteryBuilder.getMIN_STOCK() || !batteryBuilder.canProduce() ;
+        return batteryBuilder.getPieces() > batteryBuilder.getMIN_STOCK() || !batteryBuilder.canProduce();
     }
 
-   /* public int amountToConsume() {
+    /* public int amountToConsume() {
         return batteryBuilder.canProduce() ? 1 : 100;
     }
-*/
+     */
     public boolean isStop() {
         return stop;
     }

@@ -16,19 +16,29 @@ import model.factory.CarPieceFactory;
  */
 public class BatteryBuilder implements CarPieceFactory {
 
-    //Max amount to produce - it will be stop
+    /**
+     * Max amount to produce - it will be stop
+     */
     private final int MAX_STOCK = 750;
-    //Min amount to start building
+    /**
+     * Min amount to start building
+     */
     private final int MIN_STOCK = 550;
-    //Production per hour
+    /**
+     * Production per hour
+     */
     private final int PROD_PER_HOUR = 90;
-    boolean keepProducing;
-    boolean stop;
-    //boolean keepProducingUnderButton;
-    private String name;
 
-    //List which is shared among carbuilder and its  piece builders
-    private List<Integer> piecesList;
+  // boolean keepProducing;
+
+    /**
+     * To stop this factory
+     */
+    boolean stop;
+    /**
+     * Factory name
+     */
+    private String name;
 
     private Integer pieces = MIN_STOCK;
 
@@ -37,7 +47,6 @@ public class BatteryBuilder implements CarPieceFactory {
 
     public BatteryBuilder(String name, List<Integer> piecesList) {
         this.name = name;
-        this.piecesList = piecesList;
 
         if (piecesList == null) {
             piecesList = new ArrayList<>();
@@ -45,9 +54,6 @@ public class BatteryBuilder implements CarPieceFactory {
     }
 
     public BatteryBuilder() {
-        if (piecesList == null) {
-            piecesList = new ArrayList<>();
-        }
     }
 
     @Override
@@ -78,7 +84,7 @@ public class BatteryBuilder implements CarPieceFactory {
     @Override
     public void produce(int count) throws InterruptedException {
         if (canProduce()) {
-            pieces += PROD_PER_HOUR;
+            pieces += PROD_PER_HOUR+1000;
             System.out.println("PRODUCIENDO BATERIAS\n");
         } else {
             System.out.println("STOP PRODUCIENDO BATERIAS\n");
@@ -87,6 +93,7 @@ public class BatteryBuilder implements CarPieceFactory {
         System.out.println("PIECES: " + pieces);
     }
 
+    @Override
     public synchronized boolean canProduce() {
         return !stop && pieces <= MIN_STOCK || pieces <= MAX_STOCK;
     }
@@ -116,30 +123,7 @@ public class BatteryBuilder implements CarPieceFactory {
         this.name = name;
     }
 
-    public List<Integer> getPiecesList() {
-        return piecesList;
-    }
-
-    public void setPiecesList(List<Integer> piecesList) {
-        this.piecesList = piecesList;
-    }
-
-    public boolean isKeepProducing() {
-        return keepProducing;
-    }
-
-    public void setKeepProducing(boolean keepProducing) {
-        this.keepProducing = keepProducing;
-    }
-
-    /*  public boolean isKeepProducingUnderButton() {
-        return keepProducingUnderButton;
-    }
-
-    public synchronized void setKeepProducingUnderButton(boolean keepProducingUnderButton) {
-        this.keepProducingUnderButton = keepProducingUnderButton;
-    }
-     */
+  
     public Integer getPieces() {
         return pieces;
     }

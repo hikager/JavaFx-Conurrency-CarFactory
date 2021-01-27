@@ -8,17 +8,22 @@ package model.factory;
 /**
  * A car builder needs to satisfy all these parts from the contract.
  *
- * @author Luis ML 
- * See also {@link dam.projecte.concurrencia.fabrica.model.factoryImp.CarBuilder#this}
+ * @author Luis ML See also
+ * {@link dam.projecte.concurrencia.fabrica.model.factoryImp.CarBuilder#this}
  */
 public interface CarFactory extends Runnable {
+
+    /**
+     * The fix amount of cars to be built per our
+     */
+    public static final int CARS_PER_HOUR = 100;
 
     /**
      * When a carBuilder starts to consume car pieces
      *
      * @param count A counting integer to know the times this method is called.
      */
-    void consume(int count )throws InterruptedException ;
+    void consume(int count) throws InterruptedException;
 
     /**
      * Whether we need to stop the consume part (All of it) - this will stop the

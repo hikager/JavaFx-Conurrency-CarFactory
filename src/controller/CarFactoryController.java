@@ -34,7 +34,7 @@ public class CarFactoryController implements Initializable {
 
     private final String styleWhenIsWorking = " -fx-background-color:  #9cff33;  -fx-text-fill: #ffffff;-fx-alignment:center;";
     private final String styleWhenIsNotWorking = " -fx-background-color:  #e10303;  -fx-text-fill: #ffffff;-fx-alignment:center;";
-     private final String styleWhenIsBeingStop = " -fx-background-color:  orange;  -fx-text-fill: black;-fx-alignment:center;";
+    private final String styleWhenIsBeingStop = " -fx-background-color:  #f19518;  -fx-text-fill: #000000 ;-fx-alignment:center;";
 
     //Runnables
     private CarBuilder carBuilder;
@@ -189,9 +189,9 @@ public class CarFactoryController implements Initializable {
     }
 
     @FXML
-    private void onStopBatteriesClick(MouseEvent event) {
+    private void onStopBatteriesClick(MouseEvent event) throws InterruptedException {
         synchronized (stopBtnBatteries) {
-
+            Thread.sleep(200);
             if (!batteryBuilder.isStop()) {
                 batteryBuilder.setStop(true);
                 stopBtnBatteries.setText("Restart factory");

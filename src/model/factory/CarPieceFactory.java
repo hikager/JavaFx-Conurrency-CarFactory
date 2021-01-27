@@ -25,4 +25,6 @@ public interface CarPieceFactory extends Runnable {
      * whole factory (only the piece factory which is called)
      */
     void stop();
+    
+    boolean canProduce();
 }
