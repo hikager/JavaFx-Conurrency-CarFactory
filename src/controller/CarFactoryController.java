@@ -10,21 +10,18 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
+
 import javafx.scene.input.MouseEvent;
-import model.Person;
+
 import model.PopUpMSG;
-import model.factory.CarFactory;
+
 import model.factoryImp.BatteryBuilder;
 import model.factoryImp.CarBuilder;
 
@@ -34,6 +31,10 @@ import model.factoryImp.CarBuilder;
  * @author LuisDAM
  */
 public class CarFactoryController implements Initializable {
+
+    private final String styleWhenIsWorking = " -fx-background-color:  #9cff33;  -fx-text-fill: #ffffff;-fx-alignment:center;";
+    private final String styleWhenIsNotWorking = " -fx-background-color:  #e10303;  -fx-text-fill: #ffffff;-fx-alignment:center;";
+     private final String styleWhenIsBeingStop = " -fx-background-color:  orange;  -fx-text-fill: black;-fx-alignment:center;";
 
     //Runnables
     private CarBuilder carBuilder;
@@ -50,7 +51,7 @@ public class CarFactoryController implements Initializable {
 
     //Per mostrar errors o altres
     private PopUpMSG popUpMsg;
-    
+
     @FXML
     private Spinner<?> engineSpinnerId;
     @FXML
@@ -101,22 +102,23 @@ public class CarFactoryController implements Initializable {
         carBuilder = new CarBuilder(batteryBuilder);
         buildersInit();
         windowComponentsInit();
+        //    stopFactory();
     }
-    
+
     private void buildersInit() {
         this.carBuilderThread = new Thread(this.carBuilder, "car-builder-thread");
         this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
         carBuilderThread.start();
         batteryBuilderThread.start();
-        
+
     }
-    
+
     private void windowComponentsInit() {
-        
+
         this.carBuilderTextThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                
+
                 try {
                     while (true) {
                         System.out.println("CAR TEXT");
@@ -126,11 +128,11 @@ public class CarFactoryController implements Initializable {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
         },
                 "car-text-builder-thread");
-        
+
         this.batteryBuilderTextThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -143,44 +145,64 @@ public class CarFactoryController implements Initializable {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
         }, "battery-text-builder-thread");
-        
+
         carBuilderTextThread.start();
-        
+
         batteryBuilderTextThread.start();
     }
-    
+
     private void carTextSync() throws InterruptedException {
-        synchronized (carBuilder) {
-            carText.setText("" + carBuilder.getPiecesList().size());
+        synchronized (carBuilder.getCars()) {
+            carText.setText("" + carBuilder.getCars());
+
+            if (carBuilder.canConsume()) {
+                carText.setStyle(styleWhenIsWorking);
+            } else {
+                carText.setStyle(styleWhenIsNotWorking);
+            }
             System.out.println(carText.getText());
             // this.carBuilder.getPiecesList().notify();
         }
-        
+
     }
-    
+
     private void batteryTextSync() throws InterruptedException {
-        synchronized (batteryBuilder) {
-            batteryText.setText("" + batteryBuilder.getPiecesList().size());
+        synchronized (batteryBuilder.getPieces()) {
+            batteryText.setText("" + batteryBuilder.getPieces());
+
+            if (!batteryBuilder.isStop()) {
+                if (batteryBuilder.canProduce()) {
+                    batteryText.setStyle(styleWhenIsWorking);
+                } else {
+                    batteryText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                batteryText.setStyle(styleWhenIsBeingStop);
+            }
+
             System.out.println(batteryText.getText());
             // batteryBuilder.getPiecesList().notify();
         }
     }
-    
+
     @FXML
     private void onStopBatteriesClick(MouseEvent event) {
-        
-        System.out.println("BUTTTTONNNNNNNNNNN\n\n\n");
-        
-        if (batteryBuilder.isKeepProducingUnderButton()) {
-            batteryBuilder.setKeepProducingUnderButton(false);
-            stopBtnBatteries.setText("Restart factory");
-        }else{
-               batteryBuilder.setKeepProducingUnderButton(true);
-               stopBtnBatteries.setText("Stop factory");
+        synchronized (stopBtnBatteries) {
+
+            if (!batteryBuilder.isStop()) {
+                batteryBuilder.setStop(true);
+                stopBtnBatteries.setText("Restart factory");
+                // stopBtnBatteries.notify();
+            } else {
+                batteryBuilder.setStop(false);
+                stopBtnBatteries.setText("Stop factory");
+                //  stopBtnBatteries.notify();
+            }
         }
+
     }
-    
+
 }

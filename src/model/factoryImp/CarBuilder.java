@@ -18,7 +18,8 @@ public class CarBuilder implements CarFactory {
 
     //Per hour -> 100 cars aprox => 5 pieces, then 100/5  makes how many pieces  needs per hour
     private int CONSUMING_PIECES_PER_HOUR = 20;
-
+    private boolean stop;
+    private boolean stopByStock;
     private String name;
 
     //Thread control - run or not to run
@@ -26,6 +27,7 @@ public class CarBuilder implements CarFactory {
 
     //List which is shared among carbuilder and its  piece builders
     private List<Integer> piecesList;
+    private Integer cars = 0;
 
     //Builders - For Pieces 
     private BatteryBuilder batteryBuilder;
@@ -49,12 +51,17 @@ public class CarBuilder implements CarFactory {
     @Override
     public void run() {
         // writes the value to memory, so that the change is visible to other threads; equivalent to writing a volatile variable
+
         running.set(true);
         int count = 0;
+        stop = false;
+        stopByStock = false;
+
         while (running.get()) { // gets the value from the memory, so that changes made by other threads are visible; equivalent to reading a volatile variable
             try {
-                System.out.println("GO CONSUMER....");
-                consume(count);
+                consume(++count);
+
+                Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
@@ -63,40 +70,39 @@ public class CarBuilder implements CarFactory {
 
     @Override
     public synchronized void consume(int count) throws InterruptedException {
-        int consumed = 0;
-        synchronized (batteryBuilder.getPiecesList()) {
+        
+        //  consume(count);
+        if (!stop && canConsume()) {
+            int consumes = 100;
+            System.out.println("GO CONSUMER.... (" + count + ")");
+            Integer batPieces = batteryBuilder.getPieces();
+            batPieces -= consumes;
+           batteryBuilder.setPieces(batPieces);
 
-            while (batteryBuilder.getPiecesList().size() < batteryBuilder.getMIN_STOCK()) {
-                System.out.println("\nConsumer [" + batteryBuilder.getName() + "] is stopped... !!!\n");
-                batteryBuilder.getPiecesList().wait();
-                System.out.println("\n==================\n");
-            }
+            cars += consumes;
+            
+            System.out.println("CONSUMED: "+consumes);
 
-            Thread.sleep(1000);//for human being to watch how jvm behaves
-
-            //What it consumes
-            if (batteryBuilder.getPiecesList().size() - batteryBuilder.getMIN_STOCK() > CONSUMING_PIECES_PER_HOUR) {
-                for (int i = 0; i < CONSUMING_PIECES_PER_HOUR; ++i) {
-                    if (batteryBuilder.getPiecesList().size() > 0) {
-                        consumed = batteryBuilder.getPiecesList().remove(0);
-
-                    }
-                }
-                //Cars "built-cars"
-                piecesList.add(consumed);
-            } else {
-                //   batteryBuilder.getPiecesList().clear();
-            }
-
-            System.out.println("Consumed: " + CONSUMING_PIECES_PER_HOUR);
-            System.out.println("Battery stock : " + batteryBuilder.getPiecesList().size());
-
-            //What it uses to produce car
-            System.out.println("Cars procued: " + piecesList.size() + "\n\n");
-            ++count;
-            batteryBuilder.getPiecesList().notify();
+        } else {
+            System.out.println("CONSUMER STOP (max stock reached)");
         }
 
+    }
+
+    public boolean canConsume() {
+        return batteryBuilder.getPieces() > batteryBuilder.getMIN_STOCK() || !batteryBuilder.canProduce() ;
+    }
+
+   /* public int amountToConsume() {
+        return batteryBuilder.canProduce() ? 1 : 100;
+    }
+*/
+    public boolean isStop() {
+        return stop;
+    }
+
+    public synchronized void setStop(boolean stop) {
+        this.stop = stop;
     }
 
     @Override
@@ -118,6 +124,14 @@ public class CarBuilder implements CarFactory {
 
     public void setPiecesList(List<Integer> piecesList) {
         this.piecesList = piecesList;
+    }
+
+    public synchronized Integer getCars() {
+        return cars;
+    }
+
+    public void setCars(Integer cars) {
+        this.cars = cars;
     }
 
 }

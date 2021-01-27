@@ -23,11 +23,14 @@ public class BatteryBuilder implements CarPieceFactory {
     //Production per hour
     private final int PROD_PER_HOUR = 90;
     boolean keepProducing;
-     boolean keepProducingUnderButton;
+    boolean stop;
+    //boolean keepProducingUnderButton;
     private String name;
 
     //List which is shared among carbuilder and its  piece builders
     private List<Integer> piecesList;
+
+    private Integer pieces = MIN_STOCK;
 
     //Thread control - run or not to run
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -49,59 +52,48 @@ public class BatteryBuilder implements CarPieceFactory {
 
     @Override
     public void run() {
-        keepProducingUnderButton =true;
+        //  keepProducingUnderButton = true;
         running.set(true);
         int count = 0;
+        // keepProducing = true;
+        stop = false;
+        while (running.get()) {
 
-        while (running.get()) { // gets the value from the memory, so that changes made by other threads are visible; equivalent to reading a volatile variable
-            System.out.println("Battery builder");
             try {
-                System.out.println("\n\t\\/" + this.name + "\n");
+                //stops for external request (eg: button)
+                if (!stop) {
+                    produce(++count);
 
-                if (piecesList.size()- PROD_PER_HOUR < MIN_STOCK) {
-                    keepProducing = true;
                 }
-                produce(++count);
+                System.out.println("\npieces:: " + pieces);
+                Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
+
         }
 
     }
 
     @Override
     public void produce(int count) throws InterruptedException {
-
-        //Making synchronization of objects - we avoid Race Conditions
-        synchronized (piecesList) {
-
-            System.out.println("STOCK SIZE PRODUCER " + name + ": " + piecesList.size());
-            while (piecesList.size() > MAX_STOCK) {
-                System.out.println("\nProducer [" + name + "] is full !!!\n");
-                piecesList.wait();
-                System.out.println("\n==================\n");
-                keepProducing = false;
-            }
-
-            if (keepProducing && keepProducingUnderButton) {
-                //If the consumer is not empty then we got to simulate the "consumition"
-                Thread.sleep(1000);//for human being to watch how jvm behaves
-
-                for (int i = 0; i < PROD_PER_HOUR; ++i) {
-                    piecesList.add(count);
-                }
-
-                System.out.println("\nProduced " + name + ":: " + count);
-                ++count;
-                piecesList.notify();//Notify all threads which use the object that this one is no "free"
-            }
-
+        if (canProduce()) {
+            pieces += PROD_PER_HOUR;
+            System.out.println("PRODUCIENDO BATERIAS\n");
+        } else {
+            System.out.println("STOP PRODUCIENDO BATERIAS\n");
         }
+
+        System.out.println("PIECES: " + pieces);
+    }
+
+    public synchronized boolean canProduce() {
+        return !stop && pieces <= MIN_STOCK || pieces <= MAX_STOCK;
     }
 
     @Override
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.stop = true;
     }
 
     public int getMAX_STOCK() {
@@ -140,15 +132,28 @@ public class BatteryBuilder implements CarPieceFactory {
         this.keepProducing = keepProducing;
     }
 
-    public boolean isKeepProducingUnderButton() {
+    /*  public boolean isKeepProducingUnderButton() {
         return keepProducingUnderButton;
     }
 
     public synchronized void setKeepProducingUnderButton(boolean keepProducingUnderButton) {
         this.keepProducingUnderButton = keepProducingUnderButton;
     }
-    
-    
-    
+     */
+    public Integer getPieces() {
+        return pieces;
+    }
+
+    public void setPieces(Integer pieces) {
+        this.pieces = pieces;
+    }
+
+    public boolean isStop() {
+        return stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
 
 }
