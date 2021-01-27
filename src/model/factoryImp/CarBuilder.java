@@ -31,8 +31,6 @@ public class CarBuilder implements CarFactory {
     //Thread control - run or not to run
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    //List which is shared among carbuilder and its  piece builders
-    private List<Integer> piecesList;
     private Integer cars = 0;
 
     //Builders - For Pieces 
@@ -49,9 +47,13 @@ public class CarBuilder implements CarFactory {
     //Just for test view is working fine (synchronized)
     public CarBuilder(BatteryBuilder batteryBuilder) {
         this.batteryBuilder = batteryBuilder;
-        if (piecesList == null) {
-            piecesList = new ArrayList<>();
-        }
+
+    }
+
+    public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder) {
+        this.engineBuilder = engineBuilder;
+        this.batteryBuilder = batteryBuilder;
+
     }
 
     @Override
@@ -79,17 +81,17 @@ public class CarBuilder implements CarFactory {
 
         //  consume(count);
         //!stop &&
-        if ( canConsume()) {
-           // int consumes = 100;
+        if (canConsume()) {
+            // int consumes = 100;
             System.out.println("GO CONSUMER.... (" + count + ")");
-            Integer batPieces = batteryBuilder.getPieces();
+            /* Integer batPieces = batteryBuilder.getPieces();
             batPieces -= CARS_PER_HOUR;
             batteryBuilder.setPieces(batPieces);
-
+             */
+            consumePieces();
             cars += CARS_PER_HOUR;
 
             System.out.println("CONSUMED: " + CARS_PER_HOUR);
-
         } else {
             System.out.println("CONSUMER STOP (max stock reached)");
         }
@@ -97,7 +99,22 @@ public class CarBuilder implements CarFactory {
     }
 
     public boolean canConsume() {
+        return canConsumeBatteries() && canConsumeEngines();
+    }
+
+    public boolean canConsumeBatteries() {
         return batteryBuilder.getPieces() > batteryBuilder.getMIN_STOCK() || !batteryBuilder.canProduce();
+    }
+
+    public boolean canConsumeEngines() {
+        return engineBuilder.getPieces() > engineBuilder.getMIN_STOCK() || !engineBuilder.canProduce();
+    }
+
+    private void consumePieces() {
+        //Consuming batteries
+        batteryBuilder.setPieces(batteryBuilder.getPieces() - CARS_PER_HOUR);
+        //Consuming engines
+        engineBuilder.setPieces(engineBuilder.getPieces() - CARS_PER_HOUR);
     }
 
     /* public int amountToConsume() {
@@ -123,14 +140,6 @@ public class CarBuilder implements CarFactory {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Integer> getPiecesList() {
-        return piecesList;
-    }
-
-    public void setPiecesList(List<Integer> piecesList) {
-        this.piecesList = piecesList;
     }
 
     public synchronized Integer getCars() {

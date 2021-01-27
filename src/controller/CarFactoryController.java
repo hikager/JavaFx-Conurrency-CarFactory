@@ -24,6 +24,7 @@ import model.PopUpMSG;
 
 import model.factoryImp.BatteryBuilder;
 import model.factoryImp.CarBuilder;
+import model.factoryImp.EngineBuilder;
 
 /**
  * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
@@ -39,14 +40,17 @@ public class CarFactoryController implements Initializable {
     //Runnables
     private CarBuilder carBuilder;
     private BatteryBuilder batteryBuilder;
+    private EngineBuilder engineBuilder;
 
     //Threads
     private Thread carBuilderThread;
     private Thread batteryBuilderThread;
+    private Thread engineBuilderThread;
 
     //Windows threads
     private Thread carBuilderTextThread;
     private Thread batteryBuilderTextThread;
+    private Thread engineBuilderTextThread;
     private Thread batteryBuilderStopButtonThread;
 
     //Per mostrar errors o altres
@@ -99,7 +103,9 @@ public class CarFactoryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         batteryBuilder = new BatteryBuilder("batteryBuilder", new ArrayList<Integer>());
-        carBuilder = new CarBuilder(batteryBuilder);
+        engineBuilder = new EngineBuilder();
+        carBuilder = new CarBuilder(batteryBuilder, engineBuilder);
+
         buildersInit();
         windowComponentsInit();
         //    stopFactory();
@@ -108,8 +114,10 @@ public class CarFactoryController implements Initializable {
     private void buildersInit() {
         this.carBuilderThread = new Thread(this.carBuilder, "car-builder-thread");
         this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
+        engineBuilderThread = new Thread(this.engineBuilder, "engine-builder-thread");
         carBuilderThread.start();
         batteryBuilderThread.start();
+        engineBuilderThread.start();
 
     }
 
@@ -148,10 +156,28 @@ public class CarFactoryController implements Initializable {
 
             }
         }, "battery-text-builder-thread");
+//engineBuilderTextThread
 
+        this.engineBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        System.out.println("battery text");
+                        Thread.sleep(1000);
+                        engineTextSync();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }, "battery-text-builder-thread");
         carBuilderTextThread.start();
 
         batteryBuilderTextThread.start();
+
+        engineBuilderTextThread.start();
     }
 
     private void carTextSync() throws InterruptedException {
@@ -184,6 +210,25 @@ public class CarFactoryController implements Initializable {
             }
 
             System.out.println(batteryText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    private void engineTextSync() throws InterruptedException {
+        synchronized (engineBuilder.getPieces()) {
+            engineText.setText("" + engineBuilder.getPieces());
+
+            if (!engineBuilder.isStop()) {
+                if (engineBuilder.canProduce()) {
+                    engineText.setStyle(styleWhenIsWorking);
+                } else {
+                    engineText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                engineText.setStyle(styleWhenIsBeingStop);
+            }
+
+            System.out.println(engineText.getText());
             // batteryBuilder.getPiecesList().notify();
         }
     }

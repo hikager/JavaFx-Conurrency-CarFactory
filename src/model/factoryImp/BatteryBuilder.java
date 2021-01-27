@@ -17,7 +17,7 @@ import model.factory.CarPieceFactory;
 public class BatteryBuilder implements CarPieceFactory {
 
     /**
-     * Max amount to produce - it will be stop
+     * Max amount to produce - it will be stop, it will be stop when it reaches
      */
     private final int MAX_STOCK = 750;
     /**
@@ -29,8 +29,7 @@ public class BatteryBuilder implements CarPieceFactory {
      */
     private final int PROD_PER_HOUR = 90;
 
-  // boolean keepProducing;
-
+    // boolean keepProducing;
     /**
      * To stop this factory
      */
@@ -40,9 +39,14 @@ public class BatteryBuilder implements CarPieceFactory {
      */
     private String name;
 
+    /**
+     * Start amount when factory is started
+     */
     private Integer pieces = MIN_STOCK;
 
-    //Thread control - run or not to run
+    /**
+     * Thread control - run or not to run - thread-safe
+     */
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     public BatteryBuilder(String name, List<Integer> piecesList) {
@@ -84,7 +88,7 @@ public class BatteryBuilder implements CarPieceFactory {
     @Override
     public void produce(int count) throws InterruptedException {
         if (canProduce()) {
-            pieces += PROD_PER_HOUR+1000;
+            pieces += PROD_PER_HOUR;
             System.out.println("PRODUCIENDO BATERIAS\n");
         } else {
             System.out.println("STOP PRODUCIENDO BATERIAS\n");
@@ -123,7 +127,6 @@ public class BatteryBuilder implements CarPieceFactory {
         this.name = name;
     }
 
-  
     public Integer getPieces() {
         return pieces;
     }
