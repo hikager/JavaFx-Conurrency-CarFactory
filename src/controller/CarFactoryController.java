@@ -28,6 +28,7 @@ import model.factoryImp.CarBuilder;
 import model.factoryImp.EngineBuilder;
 import model.factoryImp.SeatBuilder;
 import model.factoryImp.StampingBuilder;
+import model.factoryImp.WheelBuilder;
 
 /**
  * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
@@ -46,6 +47,7 @@ public class CarFactoryController implements Initializable {
     private EngineBuilder engineBuilder;
     private SeatBuilder seatBuilder;
     private StampingBuilder stampingBuilder;
+    private WheelBuilder wheelBuilder;
 
     //Threads
     private Thread carBuilderThread;
@@ -53,6 +55,7 @@ public class CarFactoryController implements Initializable {
     private Thread engineBuilderThread;
     private Thread seatBuilderThread;
     private Thread stampingBuilderThread;
+    private Thread WheelBuilderThread;
 
     //Windows threads
     private Thread carBuilderTextThread;
@@ -60,6 +63,7 @@ public class CarFactoryController implements Initializable {
     private Thread engineBuilderTextThread;
     private Thread seatBuilderTextThread;
     private Thread stampingBuilderTextThread;
+    private Thread WheelBuilderTextThread;
     private Thread batteryBuilderStopButtonThread;
 
     //Per mostrar errors o altres
@@ -111,11 +115,12 @@ public class CarFactoryController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        wheelBuilder = new WheelBuilder();
         stampingBuilder = new StampingBuilder();
         batteryBuilder = new BatteryBuilder("batteryBuilder");
         engineBuilder = new EngineBuilder();
         seatBuilder = new SeatBuilder();
-        carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder, stampingBuilder);
+        carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder, stampingBuilder, wheelBuilder);
 
         buildersInit();
         windowComponentsInit();
@@ -128,11 +133,13 @@ public class CarFactoryController implements Initializable {
         this.engineBuilderThread = new Thread(this.engineBuilder, "engine-builder-thread");
         this.seatBuilderThread = new Thread(this.seatBuilder, "seat-builder-thread");
         this.stampingBuilderThread = new Thread(this.stampingBuilder, "stamping-builder-thread");
+        this.WheelBuilderThread = new Thread(this.wheelBuilder, "wheel-builder-thread");
         carBuilderThread.start();
         batteryBuilderThread.start();
         engineBuilderThread.start();
         seatBuilderThread.start();
         stampingBuilderThread.start();
+        WheelBuilderThread.start();
 
     }
 
@@ -172,6 +179,29 @@ public class CarFactoryController implements Initializable {
                         Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     Platform.runLater(carText);
+                }
+            }
+        }
+        );
+
+        this.WheelBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable wheelText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("WHEEL TEXT");
+                        wheelTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(wheelText);
                 }
             }
         }
@@ -286,6 +316,9 @@ public class CarFactoryController implements Initializable {
         stampingBuilderTextThread.setDaemon(true);
         stampingBuilderTextThread.start();
 
+        WheelBuilderTextThread.setDaemon(true);
+        WheelBuilderTextThread.start();
+
     }
 
     private void carTextSync() {
@@ -300,6 +333,27 @@ public class CarFactoryController implements Initializable {
             System.out.println(carText.getText());
             // this.carBuilder.getPiecesList().notify();
         }
+
+    }
+
+    private void wheelTextSync() {
+        synchronized (wheelBuilder.getPieces()) {
+            wheelText.setText("" + wheelBuilder.getPieces());
+        }
+
+        synchronized (wheelBuilder.getPieces()) {
+            if (!batteryBuilder.isStop()) {
+                if (wheelBuilder.canProduce()) {
+                    wheelText.setStyle(styleWhenIsWorking);
+                } else {
+                    wheelText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                wheelText.setStyle(styleWhenIsBeingStop);
+            }
+        }
+        System.out.println(wheelText.getText());
+        // batteryBuilder.getPiecesList().notify();
 
     }
 

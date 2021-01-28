@@ -69,6 +69,14 @@ public class CarBuilder implements CarFactory {
 
     }
 
+    public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder, StampingBuilder stampingBuilder, WheelBuilder wheelBuilder) {
+        this.engineBuilder = engineBuilder;
+        this.batteryBuilder = batteryBuilder;
+        this.seatBuilder = seatBuilder;
+        this.stampingBuilder = stampingBuilder;
+        this.wheelBuilder = wheelBuilder;
+    }
+
     @Override
     public void run() {
         // writes the value to memory, so that the change is visible to other threads; equivalent to writing a volatile variable
@@ -119,7 +127,7 @@ public class CarBuilder implements CarFactory {
      * p hour)
      */
     public boolean canConsume() {
-        return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats();
+        return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats() &&  canConsumeWheel();
     }
 
     /**
@@ -159,6 +167,15 @@ public class CarBuilder implements CarFactory {
     }
 
     /**
+     * Report the consumer whether wheels can be consumed.
+     *
+     * @return Can we get wheels?
+     */
+    public boolean canConsumeWheel() {
+        return wheelBuilder.getPieces() > wheelBuilder.getMIN_STOCK() || !wheelBuilder.canProduce();
+    }
+
+    /**
      * It takes the amount of pieces which 100 cars need per hour (100 pieces
      * from each builder/factory)
      *
@@ -172,6 +189,8 @@ public class CarBuilder implements CarFactory {
         seatBuilder.setPieces(seatBuilder.getPieces() - CARS_PER_HOUR);
         //Consuming stampings
         stampingBuilder.setPieces(stampingBuilder.getPieces() - CARS_PER_HOUR);
+        //Consuming wheel
+        wheelBuilder.setPieces(wheelBuilder.getPieces() - CARS_PER_HOUR);
     }
 
     /* public int amountToConsume() {

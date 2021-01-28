@@ -68,12 +68,12 @@ public class EngineBuilder implements CarPieceFactory {
     }
 
     @Override
-    public boolean canProduce() {
+    public  synchronized boolean canProduce() {
         return !stop && pieces <= MIN_STOCK || pieces <= MAX_STOCK;
     }
 
     @Override
-    public void produce(int count) throws InterruptedException {
+    public synchronized void produce(int count) throws InterruptedException {
         if (canProduce()) {
             pieces += PROD_PER_HOUR;
             System.out.println("PRODUCIENDO BATERIAS\n");
