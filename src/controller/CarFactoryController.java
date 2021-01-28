@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -135,7 +136,275 @@ public class CarFactoryController implements Initializable {
 
     }
 
+    /**
+     * <h1>Adding Jordi-s Examaples for: Threads independents en la vista.</h1>
+     *
+     * This solve my problem with:
+     *
+     * "JavaFX Application Thread" ArrayIndexOutOfBoundsException
+     *
+     * This errors happens sometimes when our UI (javafx engine) ends up without
+     * threads.
+     *
+     * Also a good source I found (complementing Jordi good solution) :
+     * <p>
+     * Answer from Guillaume Poussel only</p>
+     * <a href="https://stackoverflow.com/questions/19755031/how-javafx-application-thread-works">
+     * Link-StackOverFlow</a>
+     */
     private void windowComponentsInit() {
+
+        this.carBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable carText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("CAR TEXT");
+                        carTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(carText);
+                }
+            }
+        }
+        );
+
+        this.batteryBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable batteryText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("BATTERY TEXT");
+                        batteryTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(batteryText);
+                }
+            }
+        }
+        );
+
+        this.seatBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable seatText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("BATTERY TEXT");
+                        seatTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(seatText);
+                }
+            }
+        }
+        );
+
+        this.engineBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable engineText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("ENGINE TEXT");
+                        engineTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(engineText);
+                }
+            }
+        }
+        );
+
+        this.stampingBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Runnable stampingText = new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("ENGINE TEXT");
+                        stampingTextSync(); //no synchronize because it wont work
+                    }
+                };
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Platform.runLater(stampingText);
+                }
+            }
+        }
+        );
+
+        //Why setting deamons these threads?
+        //
+        carBuilderTextThread.setDaemon(true);
+        carBuilderTextThread.start();
+
+        batteryBuilderTextThread.setDaemon(true);
+        batteryBuilderTextThread.start();
+
+        seatBuilderTextThread.setDaemon(true);
+        seatBuilderTextThread.start();
+
+        engineBuilderTextThread.setDaemon(true);
+        engineBuilderTextThread.start();
+
+        stampingBuilderTextThread.setDaemon(true);
+        stampingBuilderTextThread.start();
+
+    }
+
+    private void carTextSync() {
+        synchronized (carBuilder.getCars()) {
+            carText.setText("" + carBuilder.getCars());
+
+            if (carBuilder.canConsume()) {
+                carText.setStyle(styleWhenIsWorking);
+            } else {
+                carText.setStyle(styleWhenIsNotWorking);
+            }
+            System.out.println(carText.getText());
+            // this.carBuilder.getPiecesList().notify();
+        }
+
+    }
+
+    private void batteryTextSync() {
+        synchronized (batteryBuilder.getPieces()) {
+            batteryText.setText("" + batteryBuilder.getPieces());
+        }
+
+        synchronized (batteryBuilder.getPieces()) {
+            if (!batteryBuilder.isStop()) {
+                if (batteryBuilder.canProduce()) {
+                    batteryText.setStyle(styleWhenIsWorking);
+                } else {
+                    batteryText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                batteryText.setStyle(styleWhenIsBeingStop);
+            }
+        }
+        System.out.println(batteryText.getText());
+        // batteryBuilder.getPiecesList().notify();
+
+    }
+
+    private void engineTextSync() {
+        synchronized (engineBuilder.getPieces()) {
+            engineText.setText("" + engineBuilder.getPieces());
+
+            if (!engineBuilder.isStop()) {
+                if (engineBuilder.canProduce()) {
+                    engineText.setStyle(styleWhenIsWorking);
+                } else {
+                    engineText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                engineText.setStyle(styleWhenIsBeingStop);
+            }
+
+            System.out.println(engineText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    private void seatTextSync() {
+        synchronized (seatBuilder.getPieces()) {
+            seatText.setText("" + seatBuilder.getPieces());
+
+            if (!seatBuilder.isStop()) {
+                if (seatBuilder.canProduce()) {
+                    seatText.setStyle(styleWhenIsWorking);
+                } else {
+                    seatText.setStyle(styleWhenIsNotWorking);
+                }
+            } else {
+                seatText.setStyle(styleWhenIsBeingStop);
+            }
+
+            System.out.println(seatText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    private void stampingTextSync() {
+        synchronized (stampingBuilder.getPieces()) {
+            stampingText.setText("" + stampingBuilder.getPieces());
+        }
+        synchronized (stampingBuilder.getPieces()) {
+            //1st test if can produce
+            if (stampingBuilder.canProduce()) {
+                //2n test if it's not stopped
+                if (!stampingBuilder.isStop()) {
+                    stampingText.setStyle(styleWhenIsWorking);
+                } else {
+                    stampingText.setStyle(styleWhenIsBeingStop);
+                }
+            } else {
+                stampingText.setStyle(styleWhenIsNotWorking);
+            }
+            System.out.println(stampingText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    @FXML
+    private void onStopBatteriesClick(MouseEvent event) throws InterruptedException {
+        synchronized (stopBtnBatteries) {
+            Thread.sleep(200);
+            if (!batteryBuilder.isStop()) {
+                batteryBuilder.setStop(true);
+                stopBtnBatteries.setText("Restart factory");
+                // stopBtnBatteries.notify();
+            } else {
+                batteryBuilder.setStop(false);
+                stopBtnBatteries.setText("Stop factory");
+                //  stopBtnBatteries.notify();
+            }
+        }
+
+    }
+
+}
+
+
+/*
+private void windowComponentsInit() {
 
         this.carBuilderTextThread = new Thread(new Runnable() {
             @Override
@@ -230,117 +499,4 @@ public class CarFactoryController implements Initializable {
 
         stampingBuilderTextThread.start();
     }
-
-    private void carTextSync() {
-        synchronized (carBuilder.getCars()) {
-            carText.setText("" + carBuilder.getCars());
-
-            if (carBuilder.canConsume()) {
-                carText.setStyle(styleWhenIsWorking);
-            } else {
-                carText.setStyle(styleWhenIsNotWorking);
-            }
-            System.out.println(carText.getText());
-            // this.carBuilder.getPiecesList().notify();
-        }
-
-    }
-
-    private void batteryTextSync() throws InterruptedException {
-        synchronized (batteryBuilder.getPieces()) {
-            batteryText.setText("" + batteryBuilder.getPieces());
-        }
-
-        synchronized (batteryBuilder.getPieces()) {
-            if (!batteryBuilder.isStop()) {
-                if (batteryBuilder.canProduce()) {
-                    batteryText.setStyle(styleWhenIsWorking);
-                } else {
-                    batteryText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                batteryText.setStyle(styleWhenIsBeingStop);
-            }
-        }
-        System.out.println(batteryText.getText());
-        // batteryBuilder.getPiecesList().notify();
-
-    }
-
-    private void engineTextSync() throws InterruptedException {
-        synchronized (engineBuilder.getPieces()) {
-            engineText.setText("" + engineBuilder.getPieces());
-
-            if (!engineBuilder.isStop()) {
-                if (engineBuilder.canProduce()) {
-                    engineText.setStyle(styleWhenIsWorking);
-                } else {
-                    engineText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                engineText.setStyle(styleWhenIsBeingStop);
-            }
-
-            System.out.println(engineText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
-    }
-
-    private void seatTextSync() throws InterruptedException {
-        synchronized (seatBuilder.getPieces()) {
-            seatText.setText("" + seatBuilder.getPieces());
-
-            if (!seatBuilder.isStop()) {
-                if (seatBuilder.canProduce()) {
-                    seatText.setStyle(styleWhenIsWorking);
-                } else {
-                    seatText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                seatText.setStyle(styleWhenIsBeingStop);
-            }
-
-            System.out.println(seatText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
-    }
-
-    private void stampingTextSync() throws InterruptedException {
-        synchronized (stampingBuilder.getPieces()) {
-            stampingText.setText("" + stampingBuilder.getPieces());
-        }
-        synchronized (stampingBuilder.getPieces()) {
-            //1st test if can produce
-            if (stampingBuilder.canProduce()) {
-                //2n test if it's not stopped
-                if (!stampingBuilder.isStop()) {
-                    stampingText.setStyle(styleWhenIsWorking);
-                } else {
-                    stampingText.setStyle(styleWhenIsBeingStop);
-                }
-            } else {
-                stampingText.setStyle(styleWhenIsNotWorking);
-            }
-            System.out.println(stampingText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
-    }
-
-    @FXML
-    private void onStopBatteriesClick(MouseEvent event) throws InterruptedException {
-        synchronized (stopBtnBatteries) {
-            Thread.sleep(200);
-            if (!batteryBuilder.isStop()) {
-                batteryBuilder.setStop(true);
-                stopBtnBatteries.setText("Restart factory");
-                // stopBtnBatteries.notify();
-            } else {
-                batteryBuilder.setStop(false);
-                stopBtnBatteries.setText("Stop factory");
-                //  stopBtnBatteries.notify();
-            }
-        }
-
-    }
-
-}
+ */
