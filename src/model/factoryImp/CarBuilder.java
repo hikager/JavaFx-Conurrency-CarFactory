@@ -61,6 +61,14 @@ public class CarBuilder implements CarFactory {
 
     }
 
+    public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder, StampingBuilder stampingBuilder) {
+        this.engineBuilder = engineBuilder;
+        this.batteryBuilder = batteryBuilder;
+        this.seatBuilder = seatBuilder;
+        this.stampingBuilder = stampingBuilder;
+
+    }
+
     @Override
     public void run() {
         // writes the value to memory, so that the change is visible to other threads; equivalent to writing a volatile variable
@@ -104,12 +112,13 @@ public class CarBuilder implements CarFactory {
     }
 
     /**
-     * Whether the CarFactory can make a car ( Whether we can produce 100 cars per hour(
+     * Whether the CarFactory can make a car ( Whether we can produce 100 cars
+     * per hour(
      *
      * @return If all the factories were made enough pieces to build a car (100
      * p hour)
      */
-    public  boolean canConsume() {
+    public boolean canConsume() {
         return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats();
     }
 
@@ -134,9 +143,18 @@ public class CarBuilder implements CarFactory {
     /**
      * Report the consumer whether seats can be consumed.
      *
-         * @return Can we get seats?
+     * @return Can we get seats?
      */
     public boolean canConsumeSeats() {
+        return seatBuilder.getPieces() > seatBuilder.getMIN_STOCK() || !seatBuilder.canProduce();
+    }
+
+    /**
+     * Report the consumer whether stampings can be consumed.
+     *
+     * @return Can we get stampings?
+     */
+    public boolean canConsumeStampings() {
         return seatBuilder.getPieces() > seatBuilder.getMIN_STOCK() || !seatBuilder.canProduce();
     }
 
@@ -152,6 +170,8 @@ public class CarBuilder implements CarFactory {
         engineBuilder.setPieces(engineBuilder.getPieces() - CARS_PER_HOUR);
         //Consuming seats
         seatBuilder.setPieces(seatBuilder.getPieces() - CARS_PER_HOUR);
+        //Consuming stampings
+        stampingBuilder.setPieces(stampingBuilder.getPieces() - CARS_PER_HOUR);
     }
 
     /* public int amountToConsume() {

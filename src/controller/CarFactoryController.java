@@ -26,6 +26,7 @@ import model.factoryImp.BatteryBuilder;
 import model.factoryImp.CarBuilder;
 import model.factoryImp.EngineBuilder;
 import model.factoryImp.SeatBuilder;
+import model.factoryImp.StampingBuilder;
 
 /**
  * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
@@ -43,18 +44,21 @@ public class CarFactoryController implements Initializable {
     private BatteryBuilder batteryBuilder;
     private EngineBuilder engineBuilder;
     private SeatBuilder seatBuilder;
+    private StampingBuilder stampingBuilder;
 
     //Threads
     private Thread carBuilderThread;
     private Thread batteryBuilderThread;
     private Thread engineBuilderThread;
     private Thread seatBuilderThread;
+    private Thread stampingBuilderThread;
 
     //Windows threads
     private Thread carBuilderTextThread;
     private Thread batteryBuilderTextThread;
     private Thread engineBuilderTextThread;
     private Thread seatBuilderTextThread;
+    private Thread stampingBuilderTextThread;
     private Thread batteryBuilderStopButtonThread;
 
     //Per mostrar errors o altres
@@ -106,10 +110,11 @@ public class CarFactoryController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        stampingBuilder = new StampingBuilder();
         batteryBuilder = new BatteryBuilder("batteryBuilder");
         engineBuilder = new EngineBuilder();
         seatBuilder = new SeatBuilder();
-        carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder);
+        carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder, stampingBuilder);
 
         buildersInit();
         windowComponentsInit();
@@ -121,11 +126,12 @@ public class CarFactoryController implements Initializable {
         this.batteryBuilderThread = new Thread(this.batteryBuilder, "battery-builder-thread");
         this.engineBuilderThread = new Thread(this.engineBuilder, "engine-builder-thread");
         this.seatBuilderThread = new Thread(this.seatBuilder, "seat-builder-thread");
-
+        this.stampingBuilderThread = new Thread(this.stampingBuilder, "stamping-builder-thread");
         carBuilderThread.start();
         batteryBuilderThread.start();
         engineBuilderThread.start();
         seatBuilderThread.start();
+        stampingBuilderThread.start();
 
     }
 
@@ -171,7 +177,7 @@ public class CarFactoryController implements Initializable {
             public void run() {
                 try {
                     while (true) {
-                        System.out.println("battery text");
+                        System.out.println("engine text");
                         Thread.sleep(1000);
                         engineTextSync();
                     }
@@ -180,14 +186,14 @@ public class CarFactoryController implements Initializable {
                 }
 
             }
-        }, "battery-text-builder-thread");
+        }, "engine-text-builder-thread");
 
         this.seatBuilderTextThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     while (true) {
-                        System.out.println("battery text");
+                        System.out.println("seat text");
                         Thread.sleep(1000);
                         seatTextSync();
                     }
@@ -196,7 +202,23 @@ public class CarFactoryController implements Initializable {
                 }
 
             }
-        }, "battery-text-builder-thread");
+        }, "seat-text-builder-thread");
+
+        this.stampingBuilderTextThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        System.out.println("stamping text");
+                        Thread.sleep(1000);
+                        stampingTextSync();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }, "stamping-text-builder-thread");
 
         carBuilderTextThread.start();
 
@@ -205,6 +227,8 @@ public class CarFactoryController implements Initializable {
         engineBuilderTextThread.start();
 
         seatBuilderTextThread.start();
+
+        stampingBuilderTextThread.start();
     }
 
     private void carTextSync() {
@@ -277,6 +301,27 @@ public class CarFactoryController implements Initializable {
             }
 
             System.out.println(seatText.getText());
+            // batteryBuilder.getPiecesList().notify();
+        }
+    }
+
+    private void stampingTextSync() throws InterruptedException {
+        synchronized (stampingBuilder.getPieces()) {
+            stampingText.setText("" + stampingBuilder.getPieces());
+        }
+        synchronized (stampingBuilder.getPieces()) {
+            //1st test if can produce
+            if (stampingBuilder.canProduce()) {
+                //2n test if it's not stopped
+                if (!stampingBuilder.isStop()) {
+                    stampingText.setStyle(styleWhenIsWorking);
+                } else {
+                    stampingText.setStyle(styleWhenIsBeingStop);
+                }
+            } else {
+                stampingText.setStyle(styleWhenIsNotWorking);
+            }
+            System.out.println(stampingText.getText());
             // batteryBuilder.getPiecesList().notify();
         }
     }
