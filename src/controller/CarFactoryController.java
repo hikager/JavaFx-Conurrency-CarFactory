@@ -106,7 +106,7 @@ public class CarFactoryController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        batteryBuilder = new BatteryBuilder("batteryBuilder", new ArrayList<Integer>());
+        batteryBuilder = new BatteryBuilder("batteryBuilder");
         engineBuilder = new EngineBuilder();
         seatBuilder = new SeatBuilder();
         carBuilder = new CarBuilder(batteryBuilder, engineBuilder, seatBuilder);
@@ -207,7 +207,7 @@ public class CarFactoryController implements Initializable {
         seatBuilderTextThread.start();
     }
 
-    private void carTextSync() throws InterruptedException {
+    private void carTextSync() {
         synchronized (carBuilder.getCars()) {
             carText.setText("" + carBuilder.getCars());
 
@@ -225,7 +225,9 @@ public class CarFactoryController implements Initializable {
     private void batteryTextSync() throws InterruptedException {
         synchronized (batteryBuilder.getPieces()) {
             batteryText.setText("" + batteryBuilder.getPieces());
+        }
 
+        synchronized (batteryBuilder.getPieces()) {
             if (!batteryBuilder.isStop()) {
                 if (batteryBuilder.canProduce()) {
                     batteryText.setStyle(styleWhenIsWorking);
@@ -235,10 +237,10 @@ public class CarFactoryController implements Initializable {
             } else {
                 batteryText.setStyle(styleWhenIsBeingStop);
             }
-
-            System.out.println(batteryText.getText());
-            // batteryBuilder.getPiecesList().notify();
         }
+        System.out.println(batteryText.getText());
+        // batteryBuilder.getPiecesList().notify();
+
     }
 
     private void engineTextSync() throws InterruptedException {

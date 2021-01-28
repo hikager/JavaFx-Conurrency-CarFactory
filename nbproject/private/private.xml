@@ -7,9 +7,15 @@
         </group>
         <group>
             <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/EngineBuilder.java</file>
-            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/CarBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/controller/Main.java</file>
             <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/BatteryBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/CarBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/WheelBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factory/CarPieceFactory.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/StampingBuilder.java</file>
             <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/controller/CarFactoryController.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factoryImp/SeatBuilder.java</file>
+            <file>file:/D:/myDropbox_2020.21/Dropbox/DAM_2/M9/UF2_FILS_MULTITHREATING/Material/2.Activitats/2.Practiques/m9.uf2.project1/src/model/factory/CarFactory.java</file>
         </group>
     </open-files>
 </project-private>

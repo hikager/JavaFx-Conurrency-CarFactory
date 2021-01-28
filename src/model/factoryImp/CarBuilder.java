@@ -5,8 +5,6 @@
  */
 package model.factoryImp;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import model.factory.CarFactory;
 
@@ -106,12 +104,12 @@ public class CarBuilder implements CarFactory {
     }
 
     /**
-     * Whether the CarFactory can make a car
+     * Whether the CarFactory can make a car ( Whether we can produce 100 cars per hour(
      *
      * @return If all the factories were made enough pieces to build a car (100
      * p hour)
      */
-    public boolean canConsume() {
+    public  boolean canConsume() {
         return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats();
     }
 
@@ -136,7 +134,7 @@ public class CarBuilder implements CarFactory {
     /**
      * Report the consumer whether seats can be consumed.
      *
-     * @return Can we get seats?
+         * @return Can we get seats?
      */
     public boolean canConsumeSeats() {
         return seatBuilder.getPieces() > seatBuilder.getMIN_STOCK() || !seatBuilder.canProduce();
@@ -145,6 +143,7 @@ public class CarBuilder implements CarFactory {
     /**
      * It takes the amount of pieces which 100 cars need per hour (100 pieces
      * from each builder/factory)
+     *
      */
     private void consumePieces() {
         //Consuming batteries

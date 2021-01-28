@@ -5,8 +5,7 @@
  */
 package model.factoryImp;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import model.factory.CarPieceFactory;
 
@@ -49,12 +48,10 @@ public class BatteryBuilder implements CarPieceFactory {
      */
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    public BatteryBuilder(String name, List<Integer> piecesList) {
+    public BatteryBuilder(String name) {
         this.name = name;
 
-        if (piecesList == null) {
-            piecesList = new ArrayList<>();
-        }
+        
     }
 
     public BatteryBuilder() {
