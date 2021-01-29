@@ -14,7 +14,7 @@ import model.MainFactory;
  *
  * @author Luis ML
  */
-public  class TextThreadViewColor {
+public class TextThreadViewColor {
 
     //Styles for each factory 
     private final String styleWhenIsWorking = " -fx-background-color:  #9cff33;  -fx-text-fill: #ffffff;-fx-alignment:center;";
@@ -28,6 +28,12 @@ public  class TextThreadViewColor {
         this.mainFacotry = mainFacotry;
     }
 
+    /**
+     * It makes the color change from car-text factory about the stock it has in
+     * that moment.
+     *
+     * @param carText
+     */
     public void carTextSync(TextField carText) {
 
         synchronized (mainFacotry.getCarBuilder().getCars()) {
@@ -43,6 +49,12 @@ public  class TextThreadViewColor {
         }
     }
 
+    /**
+     * It makes the color change from wheel-text factory about the stock it has
+     * in that moment.
+     *
+     * @param wheelText
+     */
     public void wheelTextSync(TextField wheelText) {
 
         synchronized (mainFacotry.getWheelBuilder().getPieces()) {
@@ -65,6 +77,12 @@ public  class TextThreadViewColor {
 
     }
 
+    /**
+     * It makes the color change from Battery-text factory about the stock it
+     * has in that moment.
+     *
+     * @param batteryText
+     */
     public void batteryTextSync(TextField batteryText) {
 
         synchronized (mainFacotry.getBatteryBuilder().getPieces()) {
@@ -87,6 +105,12 @@ public  class TextThreadViewColor {
 
     }
 
+    /**
+     * It makes the color change from engine-text factory about the stock it has
+     * in that moment.
+     *
+     * @param engineText
+     */
     public void engineTextSync(TextField engineText) {
 
         synchronized (mainFacotry.getEngineBuilder().getPieces()) {
@@ -107,6 +131,12 @@ public  class TextThreadViewColor {
         }
     }
 
+    /**
+     * It makes the color change from seat-text factory about the stock it has
+     * in that moment.
+     *
+     * @param seatText
+     */
     public void seatTextSync(TextField seatText) {
 
         synchronized (mainFacotry.getSeatBuilder().getPieces()) {
@@ -127,6 +157,12 @@ public  class TextThreadViewColor {
         }
     }
 
+    /**
+     * It makes the color change from stamping-text factory about the stock it has
+     * in that moment.
+     *
+     * @param stampingText
+     */
     public void stampingTextSync(TextField stampingText) {
 
         synchronized (mainFacotry.getStampingBuilder().getPieces()) {

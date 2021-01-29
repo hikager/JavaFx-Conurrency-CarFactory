@@ -16,10 +16,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
 import javafx.scene.control.TextField;
 
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.SwipeEvent;
 import model.MainFactory;
 
 import model.PopUpMSG;
@@ -30,9 +33,9 @@ import model.threadview.TextThreadViewColor;
  * FXML Controller class
  *
  * I've tried to clean all the code from this class which was not from
- * controller. This makes me create as many classes as functions I see to manage this. The reason why
- * I do this is because this controller was with >800 lines of code and it
- * smells like an endless spaghetti here...
+ * controller. This makes me create as many classes as functions I see to manage
+ * this. The reason why I do this is because this controller was with >800 lines
+ * of code and it smells like an endless spaghetti here...
  *
  * @author LuisDAM
  */
@@ -58,16 +61,20 @@ public class CarFactoryController implements Initializable {
     //Per mostrar errors o altres
     private PopUpMSG popUpMsg;
 
+    //Prioroties from thread
+    private final int MIN_PRIOROTY_THREAD = 1;
+    private final int MAX_PRIOROTY_THREAD = 10;
+
     @FXML
-    private Spinner<?> engineSpinnerId;
+    private Spinner<Integer> engineSpinnerId;
     @FXML
-    private Spinner<?> stappingSpinngerId;
+    private Spinner<Integer> stappingSpinngerId;
     @FXML
-    private Spinner<?> batterySpinngerId;
+    private Spinner<Integer> batterySpinngerId;
     @FXML
-    private Spinner<?> wheelSpinngerId;
+    private Spinner<Integer> wheelSpinngerId;
     @FXML
-    private Spinner<?> seatSpinngerId;
+    private Spinner<Integer> seatSpinngerId;
     @FXML
     private TextField engineText;
     @FXML
@@ -89,7 +96,7 @@ public class CarFactoryController implements Initializable {
     @FXML
     private Button stopBtnSeats;
     @FXML
-    private Spinner<?> carSpinngerId;
+    private Spinner<Integer> carSpinngerId;
     @FXML
     private TextField carText;
     @FXML
@@ -109,7 +116,24 @@ public class CarFactoryController implements Initializable {
         builderTextThreadManagement = new BuilderTextThreadManagement(textThreadView);
 
         builderTextThreadManagement.windowComponentsInit(carText, engineText, stampingText, batteryText, wheelText, seatText);
-     
+        initSpinners();
+
+    }
+
+    private void initSpinners() {
+
+        engineSpinnerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        engineSpinnerId.increment(4);//Started value : from 5 as each thread has per default
+        carSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        carSpinngerId.increment(4);
+        batterySpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        batterySpinngerId.increment(4);
+        stappingSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        stappingSpinngerId.increment(4);
+        seatSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        seatSpinngerId.increment(4);
+        wheelSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        wheelSpinngerId.increment(4);
     }
 
     @FXML
@@ -127,6 +151,15 @@ public class CarFactoryController implements Initializable {
             }
         }
 
+    }
+
+    @FXML
+    private void onDecreaseEnginePriority(SwipeEvent event) {
+
+    }
+
+    @FXML
+    private void onIncreaseEnginePriority(SwipeEvent event) {
     }
 
 }
