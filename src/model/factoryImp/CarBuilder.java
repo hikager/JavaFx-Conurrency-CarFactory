@@ -127,7 +127,7 @@ public class CarBuilder implements CarFactory {
      * p hour)
      */
     public boolean canConsume() {
-        return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats() &&  canConsumeWheel();
+        return canConsumeBatteries() && canConsumeEngines() && canConsumeSeats() && canConsumeStampings() && canConsumeWheel();
     }
 
     /**
