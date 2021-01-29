@@ -162,4 +162,24 @@ public class CarFactoryController implements Initializable {
     private void onIncreaseEnginePriority(SwipeEvent event) {
     }
 
+    @FXML
+    private void onStopEnginesClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void onStopStampingsClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void onStopWheelsClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void onStopSeatsClick(MouseEvent event) {
+    }
+
+    @FXML
+    private void onStopCarsClick(MouseEvent event) {
+    }
+
 }

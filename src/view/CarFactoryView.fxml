@@ -56,12 +56,12 @@
       <TextField fx:id="batteryText" layoutX="388.0" layoutY="210.0" prefHeight="25.0" prefWidth="130.0" />
       <TextField fx:id="wheelText" layoutX="541.0" layoutY="210.0" prefHeight="25.0" prefWidth="130.0" />
       <TextField fx:id="seatText" layoutX="696.0" layoutY="210.0" prefHeight="25.0" prefWidth="130.0" />
-      <Button fx:id="stopBtnEngines" layoutX="62.0" layoutY="259.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
+      <Button fx:id="stopBtnEngines" layoutX="62.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#onStopEnginesClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>
             <Font name="Corbel" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="stopBtnStampings" layoutX="230.0" layoutY="259.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
+      <Button fx:id="stopBtnStampings" layoutX="230.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#onStopStampingsClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>
             <Font name="Corbel" size="12.0" />
          </font>
@@ -71,12 +71,12 @@
             <Font name="Corbel" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="stopBtnWheels" layoutX="541.0" layoutY="259.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
+      <Button fx:id="stopBtnWheels" layoutX="541.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#onStopWheelsClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>
             <Font name="Corbel" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="stopBtnSeats" layoutX="696.0" layoutY="259.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
+      <Button fx:id="stopBtnSeats" layoutX="696.0" layoutY="259.0" mnemonicParsing="false" onMouseClicked="#onStopSeatsClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>
             <Font name="Corbel" size="12.0" />
          </font>
@@ -89,7 +89,7 @@
       <Separator layoutX="839.0" layoutY="147.0" orientation="VERTICAL" prefHeight="148.0" prefWidth="6.0" />
       <Spinner fx:id="carSpinngerId" layoutX="852.0" layoutY="164.0" prefHeight="25.0" prefWidth="48.0" />
       <TextField fx:id="carText" layoutX="854.0" layoutY="209.0" prefHeight="25.0" prefWidth="130.0" />
-      <Button fx:id="stopBtnCars" layoutX="854.0" layoutY="258.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
+      <Button fx:id="stopBtnCars" layoutX="854.0" layoutY="258.0" mnemonicParsing="false" onMouseClicked="#onStopCarsClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>
             <Font name="Corbel" size="12.0" />
          </font>
