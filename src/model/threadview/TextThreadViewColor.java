@@ -14,7 +14,7 @@ import model.MainFactory;
  *
  * @author Luis ML
  */
-public  class TextThreadView {
+public  class TextThreadViewColor {
 
     //Styles for each factory 
     private final String styleWhenIsWorking = " -fx-background-color:  #9cff33;  -fx-text-fill: #ffffff;-fx-alignment:center;";
@@ -24,7 +24,7 @@ public  class TextThreadView {
     //Map to manage all threads
     private MainFactory mainFacotry;
 
-    public TextThreadView(MainFactory mainFacotry) {
+    public TextThreadViewColor(MainFactory mainFacotry) {
         this.mainFacotry = mainFacotry;
     }
 

@@ -23,10 +23,16 @@ import javafx.scene.input.MouseEvent;
 import model.MainFactory;
 
 import model.PopUpMSG;
-import model.threadview.TextThreadView;
+import model.threadview.BuilderTextThreadManagement;
+import model.threadview.TextThreadViewColor;
 
 /**
  * FXML Controller class
+ *
+ * I've tried to clean all the code from this class which was not from
+ * controller. This makes me create as many classes as functions I see to manage this. The reason why
+ * I do this is because this controller was with >800 lines of code and it
+ * smells like an endless spaghetti here...
  *
  * @author LuisDAM
  */
@@ -39,18 +45,15 @@ public class CarFactoryController implements Initializable {
 
     /**
      * Manage text threads from view (those which show up the pieces produced
-     * and consumed)
+     * and consumed) to set its color only
      */
-    TextThreadView textThreadView;
+    TextThreadViewColor textThreadView;
 
-    //Windows threads
-    private Thread carBuilderTextThread;
-    private Thread batteryBuilderTextThread;
-    private Thread engineBuilderTextThread;
-    private Thread seatBuilderTextThread;
-    private Thread stampingBuilderTextThread;
-    private Thread WheelBuilderTextThread;
-    private Thread batteryBuilderStopButtonThread;
+    /**
+     * It actually manage the starting threads to control the colors from
+     * factories
+     */
+    BuilderTextThreadManagement builderTextThreadManagement;
 
     //Per mostrar errors o altres
     private PopUpMSG popUpMsg;
@@ -102,152 +105,11 @@ public class CarFactoryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mainFacotry = new MainFactory();
-        textThreadView = new TextThreadView(mainFacotry);
+        textThreadView = new TextThreadViewColor(mainFacotry);
+        builderTextThreadManagement = new BuilderTextThreadManagement(textThreadView);
 
-        windowComponentsInit();
-        //    stopFactory();
-    }
-
-    /**
-     * <h1>Adding Jordi-s Examaples for: Threads independents en la vista.</h1>
-     *
-     * This solve my problem with:
-     *
-     * "JavaFX Application Thread" ArrayIndexOutOfBoundsException
-     *
-     * This errors happens sometimes when our UI (javafx engine) ends up without
-     * threads.
-     *
-     * Also a good source I found (complementing Jordi good solution) :
-     * <p>
-     * Answer from Guillaume Poussel only</p>
-     * <a href="https://stackoverflow.com/questions/19755031/how-javafx-application-thread-works">
-     * Link-StackOverFlow</a>
-     */
-    private void windowComponentsInit() {
-
-        this.carBuilderTextThread = new Thread(() -> {
-            Runnable carText1 = () -> {
-                System.out.println("CAR TEXT");
-                //carTextSync(); //no synchronize because it wont work
-                textThreadView.carTextSync(carText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(carText1);
-            }
-        });
-
-        this.WheelBuilderTextThread = new Thread(() -> {
-            Runnable wheelText1 = () -> {
-                System.out.println("WHEEL TEXT");
-                // wheelTextSync(); //no synchronize because it wont work
-                textThreadView.wheelTextSync(wheelText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(wheelText1);
-            }
-        });
-
-        this.batteryBuilderTextThread = new Thread(() -> {
-            Runnable batteryText1 = () -> {
-                System.out.println("BATTERY TEXT");
-                // batteryTextSync(); //no synchronize because it wont work
-                textThreadView.batteryTextSync(batteryText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(batteryText1);
-            }
-        });
-
-        this.seatBuilderTextThread = new Thread(() -> {
-            Runnable seatText1 = () -> {
-                System.out.println("BATTERY TEXT");
-                //seatTextSync(); //no synchronize because it wont work
-                textThreadView.seatTextSync(seatText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(seatText1);
-            }
-        });
-
-        this.engineBuilderTextThread = new Thread(() -> {
-            Runnable engineText1 = () -> {
-                System.out.println("ENGINE TEXT");
-                // engineTextSync(); //no synchronize because it wont work
-                textThreadView.engineTextSync(engineText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(engineText1);
-            }
-        });
-
-        this.stampingBuilderTextThread = new Thread(() -> {
-            Runnable stampingText1 = () -> {
-                System.out.println("ENGINE TEXT");
-                // stampingTextSync(); //no synchronize because it wont work
-                textThreadView.stampingTextSync(stampingText);
-            };
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Platform.runLater(stampingText1);
-            }
-        });
-
-        //Why setting deamons these threads?
-        //
-        carBuilderTextThread.setDaemon(true);
-        carBuilderTextThread.start();
-
-        batteryBuilderTextThread.setDaemon(true);
-        batteryBuilderTextThread.start();
-
-        seatBuilderTextThread.setDaemon(true);
-        seatBuilderTextThread.start();
-
-        engineBuilderTextThread.setDaemon(true);
-        engineBuilderTextThread.start();
-
-        stampingBuilderTextThread.setDaemon(true);
-        stampingBuilderTextThread.start();
-
-        WheelBuilderTextThread.setDaemon(true);
-        WheelBuilderTextThread.start();
-
+        builderTextThreadManagement.windowComponentsInit(carText, engineText, stampingText, batteryText, wheelText, seatText);
+     
     }
 
     @FXML
