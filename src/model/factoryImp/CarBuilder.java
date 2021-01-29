@@ -163,7 +163,7 @@ public class CarBuilder implements CarFactory {
      * @return Can we get stampings?
      */
     public boolean canConsumeStampings() {
-        return seatBuilder.getPieces() > seatBuilder.getMIN_STOCK() || !seatBuilder.canProduce();
+        return stampingBuilder.getPieces() > stampingBuilder.getMIN_STOCK() || !stampingBuilder.canProduce();
     }
 
     /**
