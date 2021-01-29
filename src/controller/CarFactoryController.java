@@ -23,9 +23,10 @@ import javafx.scene.input.MouseEvent;
 import model.MainFactory;
 
 import model.PopUpMSG;
+import model.threadview.TextThreadView;
 
 /**
- * FXML Controller class for M15-JAVAFX-DAVID.2020-2021.DURINGCOVID
+ * FXML Controller class
  *
  * @author LuisDAM
  */
@@ -36,10 +37,11 @@ public class CarFactoryController implements Initializable {
      */
     MainFactory mainFacotry;
 
-    //Styles for each factory 
-    private final String styleWhenIsWorking = " -fx-background-color:  #9cff33;  -fx-text-fill: #ffffff;-fx-alignment:center;";
-    private final String styleWhenIsNotWorking = " -fx-background-color:  #e10303;  -fx-text-fill: #ffffff;-fx-alignment:center;";
-    private final String styleWhenIsBeingStop = " -fx-background-color:  #f19518;  -fx-text-fill: #000000 ;-fx-alignment:center;";
+    /**
+     * Manage text threads from view (those which show up the pieces produced
+     * and consumed)
+     */
+    TextThreadView textThreadView;
 
     //Windows threads
     private Thread carBuilderTextThread;
@@ -100,6 +102,7 @@ public class CarFactoryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mainFacotry = new MainFactory();
+        textThreadView = new TextThreadView(mainFacotry);
 
         windowComponentsInit();
         //    stopFactory();
@@ -123,143 +126,107 @@ public class CarFactoryController implements Initializable {
      */
     private void windowComponentsInit() {
 
-        this.carBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable carText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("CAR TEXT");
-                        carTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.carBuilderTextThread = new Thread(() -> {
+            Runnable carText1 = () -> {
+                System.out.println("CAR TEXT");
+                //carTextSync(); //no synchronize because it wont work
+                textThreadView.carTextSync(carText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(carText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(carText1);
             }
-        }
-        );
+        });
 
-        this.WheelBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable wheelText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("WHEEL TEXT");
-                        wheelTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.WheelBuilderTextThread = new Thread(() -> {
+            Runnable wheelText1 = () -> {
+                System.out.println("WHEEL TEXT");
+                // wheelTextSync(); //no synchronize because it wont work
+                textThreadView.wheelTextSync(wheelText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(wheelText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(wheelText1);
             }
-        }
-        );
+        });
 
-        this.batteryBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable batteryText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("BATTERY TEXT");
-                        batteryTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.batteryBuilderTextThread = new Thread(() -> {
+            Runnable batteryText1 = () -> {
+                System.out.println("BATTERY TEXT");
+                // batteryTextSync(); //no synchronize because it wont work
+                textThreadView.batteryTextSync(batteryText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(batteryText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(batteryText1);
             }
-        }
-        );
+        });
 
-        this.seatBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable seatText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("BATTERY TEXT");
-                        seatTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.seatBuilderTextThread = new Thread(() -> {
+            Runnable seatText1 = () -> {
+                System.out.println("BATTERY TEXT");
+                //seatTextSync(); //no synchronize because it wont work
+                textThreadView.seatTextSync(seatText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(seatText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(seatText1);
             }
-        }
-        );
+        });
 
-        this.engineBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable engineText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("ENGINE TEXT");
-                        engineTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.engineBuilderTextThread = new Thread(() -> {
+            Runnable engineText1 = () -> {
+                System.out.println("ENGINE TEXT");
+                // engineTextSync(); //no synchronize because it wont work
+                textThreadView.engineTextSync(engineText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(engineText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(engineText1);
             }
-        }
-        );
+        });
 
-        this.stampingBuilderTextThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Runnable stampingText = new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("ENGINE TEXT");
-                        stampingTextSync(); //no synchronize because it wont work
-                    }
-                };
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
+        this.stampingBuilderTextThread = new Thread(() -> {
+            Runnable stampingText1 = () -> {
+                System.out.println("ENGINE TEXT");
+                // stampingTextSync(); //no synchronize because it wont work
+                textThreadView.stampingTextSync(stampingText);
+            };
+            while (true) {
+                try {
+                    Thread.sleep(1000);
 
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(stampingText);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                Platform.runLater(stampingText1);
             }
-        }
-        );
+        });
 
         //Why setting deamons these threads?
         //
@@ -281,128 +248,6 @@ public class CarFactoryController implements Initializable {
         WheelBuilderTextThread.setDaemon(true);
         WheelBuilderTextThread.start();
 
-    }
-
-    private void carTextSync() {
-
-        synchronized (mainFacotry.getCarBuilder().getCars()) {
-            carText.setText("" + mainFacotry.getCarBuilder().getCars());
-
-            if (mainFacotry.getCarBuilder().canConsume()) {
-                carText.setStyle(styleWhenIsWorking);
-            } else {
-                carText.setStyle(styleWhenIsNotWorking);
-            }
-            System.out.println(carText.getText());
-            // this.carBuilder.getPiecesList().notify();
-        }
-
-    }
-
-    private void wheelTextSync() {
-
-        synchronized (mainFacotry.getWheelBuilder().getPieces()) {
-            wheelText.setText("" + mainFacotry.getWheelBuilder().getPieces());
-        }
-
-        synchronized (mainFacotry.getWheelBuilder().getPieces()) {
-            if (!mainFacotry.getWheelBuilder().isStop()) {
-                if (mainFacotry.getWheelBuilder().canProduce()) {
-                    wheelText.setStyle(styleWhenIsWorking);
-                } else {
-                    wheelText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                wheelText.setStyle(styleWhenIsBeingStop);
-            }
-        }
-        System.out.println(wheelText.getText());
-        // batteryBuilder.getPiecesList().notify();
-
-    }
-
-    private void batteryTextSync() {
-
-        synchronized (mainFacotry.getBatteryBuilder().getPieces()) {
-            batteryText.setText("" + mainFacotry.getBatteryBuilder().getPieces());
-        }
-
-        synchronized (mainFacotry.getBatteryBuilder().getPieces()) {
-            if (!mainFacotry.getBatteryBuilder().isStop()) {
-                if (mainFacotry.getBatteryBuilder().canProduce()) {
-                    batteryText.setStyle(styleWhenIsWorking);
-                } else {
-                    batteryText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                batteryText.setStyle(styleWhenIsBeingStop);
-            }
-        }
-        System.out.println(batteryText.getText());
-        // batteryBuilder.getPiecesList().notify();
-
-    }
-
-    private void engineTextSync() {
-
-        synchronized (mainFacotry.getEngineBuilder().getPieces()) {
-            engineText.setText("" + mainFacotry.getEngineBuilder().getPieces());
-
-            if (!mainFacotry.getEngineBuilder().isStop()) {
-                if (mainFacotry.getEngineBuilder().canProduce()) {
-                    engineText.setStyle(styleWhenIsWorking);
-                } else {
-                    engineText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                engineText.setStyle(styleWhenIsBeingStop);
-            }
-
-            System.out.println(engineText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
-    }
-
-    private void seatTextSync() {
-
-        synchronized (mainFacotry.getSeatBuilder().getPieces()) {
-            seatText.setText("" + mainFacotry.getSeatBuilder().getPieces());
-
-            if (!mainFacotry.getSeatBuilder().isStop()) {
-                if (mainFacotry.getSeatBuilder().canProduce()) {
-                    seatText.setStyle(styleWhenIsWorking);
-                } else {
-                    seatText.setStyle(styleWhenIsNotWorking);
-                }
-            } else {
-                seatText.setStyle(styleWhenIsBeingStop);
-            }
-
-            System.out.println(seatText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
-    }
-
-    private void stampingTextSync() {
-
-        synchronized (mainFacotry.getStampingBuilder().getPieces()) {
-            stampingText.setText("" + mainFacotry.getStampingBuilder().getPieces());
-        }
-        synchronized (mainFacotry.getStampingBuilder().getPieces()) {
-            //1st test if can produce
-            if (mainFacotry.getStampingBuilder().canProduce()) {
-                //2n test if it's not stopped
-                if (!mainFacotry.getStampingBuilder().isStop()) {
-                    stampingText.setStyle(styleWhenIsWorking);
-                } else {
-                    stampingText.setStyle(styleWhenIsBeingStop);
-                }
-            } else {
-                stampingText.setStyle(styleWhenIsNotWorking);
-            }
-            System.out.println(stampingText.getText());
-            // batteryBuilder.getPiecesList().notify();
-        }
     }
 
     @FXML
