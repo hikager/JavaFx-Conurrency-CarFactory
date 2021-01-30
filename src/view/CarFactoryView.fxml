@@ -40,11 +40,11 @@
       <Separator layoutX="374.0" layoutY="148.0" orientation="VERTICAL" prefHeight="148.0" prefWidth="6.0" />
       <Separator layoutX="524.0" layoutY="148.0" orientation="VERTICAL" prefHeight="148.0" prefWidth="6.0" />
       <Separator layoutX="681.0" layoutY="148.0" orientation="VERTICAL" prefHeight="148.0" prefWidth="6.0" />
-      <Spinner fx:id="engineSpinnerId" layoutX="63.0" layoutY="165.0" onSwipeDown="#onDecreaseEnginePriority" onSwipeUp="#onIncreaseEnginePriority" prefHeight="25.0" prefWidth="48.0" />
-      <Spinner fx:id="stappingSpinngerId" layoutX="220.0" layoutY="165.0" prefHeight="25.0" prefWidth="48.0" />
-      <Spinner fx:id="batterySpinngerId" layoutX="393.0" layoutY="165.0" prefHeight="25.0" prefWidth="48.0" />
-      <Spinner fx:id="wheelSpinngerId" layoutX="541.0" layoutY="165.0" prefHeight="25.0" prefWidth="48.0" />
-      <Spinner fx:id="seatSpinngerId" layoutX="694.0" layoutY="165.0" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="engineSpinnerId" layoutX="63.0" layoutY="165.0" onMouseClicked="#onEnginePriority" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="stampingSpinngerId" layoutX="220.0" layoutY="165.0" onMouseClicked="#onStampingPriority" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="batterySpinngerId" layoutX="393.0" layoutY="165.0" onMouseClicked="#onBatteriesPriority" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="wheelSpinngerId" layoutX="541.0" layoutY="165.0" onMouseClicked="#onWheelsPriority" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="seatSpinngerId" layoutX="694.0" layoutY="165.0" onMouseClicked="#onSeatsPriority" prefHeight="25.0" prefWidth="48.0" />
       <TextField fx:id="engineText" layoutX="63.0" layoutY="210.0" prefHeight="25.0" prefWidth="130.0" />
       <Label layoutX="58.0" layoutY="112.0" text="Priorities and buildings">
          <font>
@@ -87,7 +87,7 @@
          </font>
       </Label>
       <Separator layoutX="839.0" layoutY="147.0" orientation="VERTICAL" prefHeight="148.0" prefWidth="6.0" />
-      <Spinner fx:id="carSpinngerId" layoutX="852.0" layoutY="164.0" prefHeight="25.0" prefWidth="48.0" />
+      <Spinner fx:id="carSpinngerId" layoutX="852.0" layoutY="164.0" onMouseClicked="#onCarsPriority" prefHeight="25.0" prefWidth="48.0" />
       <TextField fx:id="carText" layoutX="854.0" layoutY="209.0" prefHeight="25.0" prefWidth="130.0" />
       <Button fx:id="stopBtnCars" layoutX="854.0" layoutY="258.0" mnemonicParsing="false" onMouseClicked="#onStopCarsClick" prefHeight="25.0" prefWidth="130.0" text="Stop factory">
          <font>

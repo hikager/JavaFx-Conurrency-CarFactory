@@ -61,8 +61,6 @@ public class CarFactoryController implements Initializable {
     @FXML
     private Spinner<Integer> engineSpinnerId;
     @FXML
-    private Spinner<Integer> stappingSpinngerId;
-    @FXML
     private Spinner<Integer> batterySpinngerId;
     @FXML
     private Spinner<Integer> wheelSpinngerId;
@@ -94,6 +92,8 @@ public class CarFactoryController implements Initializable {
     private TextField carText;
     @FXML
     private Button stopBtnCars;
+    @FXML
+    private Spinner<Integer> stampingSpinngerId;
 
     /**
      * Initializes the controller class components I will be using along the
@@ -121,8 +121,8 @@ public class CarFactoryController implements Initializable {
         carSpinngerId.increment(4);
         batterySpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
         batterySpinngerId.increment(4);
-        stappingSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
-        stappingSpinngerId.increment(4);
+        stampingSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
+        stampingSpinngerId.increment(4);
         seatSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
         seatSpinngerId.increment(4);
         wheelSpinngerId.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MIN_PRIOROTY_THREAD, MAX_PRIOROTY_THREAD));
@@ -150,13 +150,11 @@ public class CarFactoryController implements Initializable {
 
     }
 
-    @FXML
-    private void onDecreaseEnginePriority(SwipeEvent event) {
-
-    }
-
-    @FXML
     private void onIncreaseEnginePriority(SwipeEvent event) {
+        synchronized (mainFacotry.getEngineBuilderThread()) {
+            mainFacotry.getEngineBuilderThread().setPriority(engineSpinnerId.getValue());
+            System.out.println(mainFacotry.getEngineBuilderThread().getPriority());
+        }
     }
 
     @FXML
@@ -251,6 +249,54 @@ public class CarFactoryController implements Initializable {
                 stopBtnCars.setText("Stop factory");
 
             }
+        }
+    }
+
+    @FXML
+    private void onEnginePriority(MouseEvent event) {
+        synchronized (mainFacotry.getEngineBuilderThread()) {
+            mainFacotry.getEngineBuilderThread().setPriority(engineSpinnerId.getValue());
+            System.out.println("NEW ENGINE THREAD PRIORITY :: " + mainFacotry.getEngineBuilderThread().getPriority() + "\n");
+        }
+    }
+
+    @FXML
+    private void onStampingPriority(MouseEvent event) {
+        synchronized (mainFacotry.getStampingBuilderThread()) {
+            mainFacotry.getStampingBuilderThread().setPriority(stampingSpinngerId.getValue());
+            System.out.println("NEW  STAMPING THREAD PRIORITY :: " + mainFacotry.getStampingBuilderThread().getPriority() + "\n");
+        }
+    }
+
+    @FXML
+    private void onBatteriesPriority(MouseEvent event) {
+        synchronized (mainFacotry.getBatteryBuilderThread()) {
+            mainFacotry.getBatteryBuilderThread().setPriority(batterySpinngerId.getValue());
+            System.out.println("NEW BATTERY THREAD PRIORITY :: " + mainFacotry.getBatteryBuilderThread().getPriority() + "\n");
+        }
+    }
+
+    @FXML
+    private void onWheelsPriority(MouseEvent event) {
+        synchronized (mainFacotry.getWheelBuilderThread()) {
+            mainFacotry.getWheelBuilderThread().setPriority(wheelSpinngerId.getValue());
+            System.out.println("NEW WHEELS THREAD PRIORITY :: " + mainFacotry.getWheelBuilderThread().getPriority() + "\n");
+        }
+    }
+
+    @FXML
+    private void onSeatsPriority(MouseEvent event) {
+        synchronized (mainFacotry.getSeatBuilderThread()) {
+            mainFacotry.getSeatBuilderThread().setPriority(seatSpinngerId.getValue());
+            System.out.println("NEW SEATS THREAD PRIORITY :: " + mainFacotry.getSeatBuilderThread().getPriority() + "\n");
+        }
+    }
+
+    @FXML
+    private void onCarsPriority(MouseEvent event) {
+        synchronized (mainFacotry.getCarBuilderThread()) {
+            mainFacotry.getCarBuilderThread().setPriority(carSpinngerId.getValue());
+            System.out.println("NEW CARS THREAD PRIORITY :: " + mainFacotry.getCarBuilderThread().getPriority() + "\n");
         }
     }
 
