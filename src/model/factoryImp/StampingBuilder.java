@@ -123,7 +123,7 @@ public class StampingBuilder implements CarPieceFactory {
 
     @Override
     public void stop() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       this.stop = true;
     }
 
     public synchronized boolean isStop() {

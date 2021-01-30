@@ -24,6 +24,7 @@ public class TextThreadViewColor {
     //Map to manage all threads
     private MainFactory mainFacotry;
 
+    
     public TextThreadViewColor(MainFactory mainFacotry) {
         this.mainFacotry = mainFacotry;
     }

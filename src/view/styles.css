@@ -1,0 +1,18 @@
+
+
+
+.btnClose{
+    -fx-padding: 10px;
+}
+
+.btnClose:hover{
+  -fx-border-width: 11px;
+  -fx-border-style: dotted;
+  -fx-border-color: #a84832;
+  -fx-border-radius: 100%;
+  
+}
+
+.btnClose:pressed{
+    -fx-opacity:  0.5;
+}
