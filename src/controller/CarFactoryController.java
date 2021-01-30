@@ -6,25 +6,18 @@
 package controller;
 
 import java.net.URL;
-
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
-
 import javafx.scene.control.TextField;
-
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.SwipeEvent;
 import model.MainFactory;
-
 import model.PopUpMSG;
 import model.threadview.BuilderTextThreadManagement;
 import model.threadview.TextThreadViewColor;
@@ -137,9 +130,13 @@ public class CarFactoryController implements Initializable {
     }
 
     @FXML
-    private void onStopBatteriesClick(MouseEvent event) throws InterruptedException {
+    private void onStopBatteriesClick(MouseEvent event) {
         synchronized (stopBtnBatteries) {
-            Thread.sleep(200);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (!mainFacotry.getBatteryBuilder().isStop()) {
                 mainFacotry.getBatteryBuilder().setStop(true);
                 stopBtnBatteries.setText("Restart factory");
@@ -164,22 +161,97 @@ public class CarFactoryController implements Initializable {
 
     @FXML
     private void onStopEnginesClick(MouseEvent event) {
+        synchronized (stopBtnEngines) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!mainFacotry.getEngineBuilder().isStop()) {
+                mainFacotry.getEngineBuilder().setStop(true);
+                stopBtnEngines.setText("Restart factory");
+            } else {
+                mainFacotry.getEngineBuilder().setStop(false);
+                stopBtnEngines.setText("Stop factory");
+
+            }
+        }
     }
 
     @FXML
     private void onStopStampingsClick(MouseEvent event) {
+        synchronized (stopBtnStampings) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!mainFacotry.getStampingBuilder().isStop()) {
+                mainFacotry.getStampingBuilder().setStop(true);
+                stopBtnStampings.setText("Restart factory");
+            } else {
+                mainFacotry.getStampingBuilder().setStop(false);
+                stopBtnStampings.setText("Stop factory");
+
+            }
+        }
     }
 
     @FXML
     private void onStopWheelsClick(MouseEvent event) {
+        synchronized (stopBtnWheels) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!mainFacotry.getWheelBuilder().isStop()) {
+                mainFacotry.getWheelBuilder().setStop(true);
+                stopBtnWheels.setText("Restart factory");
+            } else {
+                mainFacotry.getWheelBuilder().setStop(false);
+                stopBtnWheels.setText("Stop factory");
+
+            }
+        }
     }
 
     @FXML
     private void onStopSeatsClick(MouseEvent event) {
+        synchronized (stopBtnSeats) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!mainFacotry.getSeatBuilder().isStop()) {
+                mainFacotry.getSeatBuilder().setStop(true);
+                stopBtnSeats.setText("Restart factory");
+            } else {
+                mainFacotry.getSeatBuilder().setStop(false);
+                stopBtnSeats.setText("Stop factory");
+
+            }
+        }
     }
 
     @FXML
     private void onStopCarsClick(MouseEvent event) {
+        synchronized (stopBtnCars) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarFactoryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (!mainFacotry.getCarBuilder().isStop()) {
+                mainFacotry.getCarBuilder().setStop(true);
+                stopBtnCars.setText("Restart factory");
+            } else {
+                mainFacotry.getCarBuilder().setStop(false);
+                stopBtnCars.setText("Stop factory");
+
+            }
+        }
     }
 
 }
