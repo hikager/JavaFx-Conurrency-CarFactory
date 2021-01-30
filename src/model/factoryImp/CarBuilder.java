@@ -88,7 +88,9 @@ public class CarBuilder implements CarFactory {
 
         while (running.get()) { // gets the value from the memory, so that changes made by other threads are visible; equivalent to reading a volatile variable
             try {
-                consume(++count);
+                if (!stop) {
+                    consume(++count);
+                }
 
                 Thread.sleep(1000);
             } catch (InterruptedException ie) {

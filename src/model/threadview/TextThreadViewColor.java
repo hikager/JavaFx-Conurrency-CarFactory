@@ -39,10 +39,14 @@ public class TextThreadViewColor {
         synchronized (mainFacotry.getCarBuilder().getCars()) {
             carText.setText("" + mainFacotry.getCarBuilder().getCars());
 
-            if (mainFacotry.getCarBuilder().canConsume()) {
-                carText.setStyle(styleWhenIsWorking);
-            } else {
-                carText.setStyle(styleWhenIsNotWorking);
+            if (!mainFacotry.getCarBuilder().isStop()) {
+                if (mainFacotry.getCarBuilder().canConsume()) {
+                    carText.setStyle(styleWhenIsWorking);
+                } else {
+                    carText.setStyle(styleWhenIsNotWorking);
+                }
+            }else{
+               carText.setStyle(styleWhenIsBeingStop);
             }
             System.out.println(carText.getText());
             // this.carBuilder.getPiecesList().notify();
@@ -158,8 +162,8 @@ public class TextThreadViewColor {
     }
 
     /**
-     * It makes the color change from stamping-text factory about the stock it has
-     * in that moment.
+     * It makes the color change from stamping-text factory about the stock it
+     * has in that moment.
      *
      * @param stampingText
      */
