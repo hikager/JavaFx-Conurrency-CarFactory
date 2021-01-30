@@ -162,5 +162,7 @@ public class WheelBuilder implements CarPieceFactory {
     public AtomicBoolean getRunning() {
         return running;
     }
-
+ public void closeThread() {
+        this.running.set(false);
+    }
 }

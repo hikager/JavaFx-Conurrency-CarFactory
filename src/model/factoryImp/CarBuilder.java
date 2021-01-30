@@ -28,7 +28,7 @@ public class CarBuilder implements CarFactory {
 
     //Thread control - run or not to run
     private final AtomicBoolean running = new AtomicBoolean(false);
-
+    
     private Integer cars = 0;
 
     //Builders - For Pieces 
@@ -37,38 +37,38 @@ public class CarBuilder implements CarFactory {
     private SeatBuilder seatBuilder;
     private StampingBuilder stampingBuilder;
     private WheelBuilder wheelBuilder;
-
+    
     public CarBuilder() {
-
+        
     }
 
     //Just for test view is working fine (synchronized)
     public CarBuilder(BatteryBuilder batteryBuilder) {
         this.batteryBuilder = batteryBuilder;
-
+        
     }
-
+    
     public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder) {
         this.engineBuilder = engineBuilder;
         this.batteryBuilder = batteryBuilder;
-
+        
     }
-
+    
     public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder) {
         this.engineBuilder = engineBuilder;
         this.batteryBuilder = batteryBuilder;
         this.seatBuilder = seatBuilder;
-
+        
     }
-
+    
     public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder, StampingBuilder stampingBuilder) {
         this.engineBuilder = engineBuilder;
         this.batteryBuilder = batteryBuilder;
         this.seatBuilder = seatBuilder;
         this.stampingBuilder = stampingBuilder;
-
+        
     }
-
+    
     public CarBuilder(BatteryBuilder batteryBuilder, EngineBuilder engineBuilder, SeatBuilder seatBuilder, StampingBuilder stampingBuilder, WheelBuilder wheelBuilder) {
         this.engineBuilder = engineBuilder;
         this.batteryBuilder = batteryBuilder;
@@ -76,7 +76,7 @@ public class CarBuilder implements CarFactory {
         this.stampingBuilder = stampingBuilder;
         this.wheelBuilder = wheelBuilder;
     }
-
+    
     @Override
     public void run() {
         // writes the value to memory, so that the change is visible to other threads; equivalent to writing a volatile variable
@@ -85,20 +85,20 @@ public class CarBuilder implements CarFactory {
         int count = 0;
         stop = false;
         stopByStock = false;
-
+        
         while (running.get()) { // gets the value from the memory, so that changes made by other threads are visible; equivalent to reading a volatile variable
             try {
                 if (!stop) {
                     consume(++count);
                 }
-
+                
                 Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
         }
     }
-
+    
     @Override
     public synchronized void consume(int count) throws InterruptedException {
 
@@ -113,12 +113,12 @@ public class CarBuilder implements CarFactory {
              */
             consumePieces();
             cars += CARS_PER_HOUR;
-
+            
             System.out.println("CONSUMED: " + CARS_PER_HOUR);
         } else {
             System.out.println("CONSUMER STOP (max stock reached)");
         }
-
+        
     }
 
     /**
@@ -202,30 +202,34 @@ public class CarBuilder implements CarFactory {
     public boolean isStop() {
         return stop;
     }
-
+    
     public synchronized void setStop(boolean stop) {
         this.stop = stop;
     }
-
+    
     @Override
     public void stop() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public synchronized Integer getCars() {
         return cars;
     }
-
+    
     public void setCars(Integer cars) {
         this.cars = cars;
     }
 
+    public void closeThread() {
+        this.running.set(false);
+    }
+    
 }

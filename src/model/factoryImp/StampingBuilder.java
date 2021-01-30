@@ -166,6 +166,8 @@ public class StampingBuilder implements CarPieceFactory {
         return running;
     }
     
-    
+     public void closeThread() {
+        this.running.set(false);
+    }
 
 }

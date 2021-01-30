@@ -128,5 +128,9 @@ public class EngineBuilder implements CarPieceFactory {
     public AtomicBoolean getRunning() {
         return running;
     }
+    
+     public void closeThread() {
+        this.running.set(false);
+    }
 
 }

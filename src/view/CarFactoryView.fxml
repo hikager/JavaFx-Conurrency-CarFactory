@@ -114,5 +114,10 @@
       <Separator layoutX="652.0" layoutY="418.0" orientation="VERTICAL" prefHeight="103.0" prefWidth="6.0" />
       <Label layoutX="684.0" layoutY="437.0" opacity="0.9" prefHeight="17.0" prefWidth="168.0" style="-fx-background-color: #e10303;" />
       <Label layoutX="694.0" layoutY="460.0" text="Factory stopped from stock" />
+      <Button fx:id="btnCloseAll" layoutX="967.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#onCloseApp" prefHeight="44.0" prefWidth="59.0" style="-fx-background-color: #e10303; -fx-background-radius: 100;" text="Close" textFill="WHITE">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

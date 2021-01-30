@@ -24,6 +24,7 @@ public final class BuilderTextThreadManagement {
     private Thread stampingBuilderTextThread;
     private Thread WheelBuilderTextThread;
 
+    private boolean factoryWorking = true;
     /**
      * Class which manage all the colors in the GUI. It's actually a complement
      * for this one.
@@ -58,7 +59,7 @@ public final class BuilderTextThreadManagement {
                 //carTextSync(); //no synchronize because it wont work
                 textThreadView.carTextSync(carText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 
@@ -75,7 +76,7 @@ public final class BuilderTextThreadManagement {
                 // wheelTextSync(); //no synchronize because it wont work
                 textThreadView.wheelTextSync(wheelText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 
@@ -92,7 +93,7 @@ public final class BuilderTextThreadManagement {
                 // batteryTextSync(); //no synchronize because it wont work
                 textThreadView.batteryTextSync(batteryText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 
@@ -109,7 +110,7 @@ public final class BuilderTextThreadManagement {
                 //seatTextSync(); //no synchronize because it wont work
                 textThreadView.seatTextSync(seatText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 
@@ -126,7 +127,7 @@ public final class BuilderTextThreadManagement {
                 // engineTextSync(); //no synchronize because it wont work
                 textThreadView.engineTextSync(engineText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 
@@ -143,7 +144,7 @@ public final class BuilderTextThreadManagement {
                 // stampingTextSync(); //no synchronize because it wont work
                 textThreadView.stampingTextSync(stampingText);
             };
-            while (true) {
+            while (factoryWorking) {
                 try {
                     Thread.sleep(1000);
 

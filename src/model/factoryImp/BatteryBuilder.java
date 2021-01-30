@@ -139,5 +139,8 @@ public class BatteryBuilder implements CarPieceFactory {
     public void setStop(boolean stop) {
         this.stop = stop;
     }
+     public void closeThread() {
+        this.running.set(false);
+    }
 
 }

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +18,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.SwipeEvent;
+import javafx.stage.Stage;
 import model.MainFactory;
 import model.PopUpMSG;
 import model.threadview.BuilderTextThreadManagement;
@@ -94,6 +96,8 @@ public class CarFactoryController implements Initializable {
     private Button stopBtnCars;
     @FXML
     private Spinner<Integer> stampingSpinngerId;
+    @FXML
+    private Button btnCloseAll;
 
     /**
      * Initializes the controller class components I will be using along the
@@ -298,6 +302,20 @@ public class CarFactoryController implements Initializable {
             mainFacotry.getCarBuilderThread().setPriority(carSpinngerId.getValue());
             System.out.println("NEW CARS THREAD PRIORITY :: " + mainFacotry.getCarBuilderThread().getPriority() + "\n");
         }
+    }
+
+    /**
+     * Close all the app and all the threads created
+     *
+     * @param event
+     */
+    @FXML
+    private void onCloseApp(MouseEvent event) {
+        System.out.println("CLOSING ALL FACTORIES...");
+        mainFacotry.closeAllFactories();
+        System.out.println("CLOSING ALL APP...");
+        Platform.exit();
+        System.out.println("BYE!");
     }
 
 }

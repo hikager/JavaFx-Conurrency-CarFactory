@@ -114,6 +114,18 @@ public class MainFactory {
         wheelBuilderThread.start();
     }
 
+    /**
+     * Close all threads created to build pieces and cars
+     */
+    public void closeAllFactories() {
+        carBuilder.closeThread();
+        batteryBuilder.closeThread();
+        engineBuilder.closeThread();
+        seatBuilder.closeThread();
+        stampingBuilder.closeThread();
+        wheelBuilder.closeThread();
+    }
+
     public CarBuilder getCarBuilder() {
         return carBuilder;
     }

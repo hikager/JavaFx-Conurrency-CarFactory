@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
@@ -19,6 +20,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
             
         try {
+            
+            primaryStage.initStyle(StageStyle.UNDECORATED);
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/view/CarFactoryView.fxml"));
             Pane ventana = (Pane) loader.load();

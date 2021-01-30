@@ -142,5 +142,7 @@ public class SeatBuilder implements CarPieceFactory {
         return running;
     }
 
-    
+     public void closeThread() {
+        this.running.set(false);
+    }
 }
